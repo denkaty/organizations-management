@@ -27,7 +27,7 @@ namespace Organizations.Presentation.API.Controllers
 		}
 
 		[HttpPut("{id}")]
-		public IActionResult Update([FromBody] UpdateOrganizationDTO updateOrganizationDTO, [FromRoute]string id)
+		public IActionResult Update([FromBody] UpdateOrganizationDTO updateOrganizationDTO, [FromRoute] string id)
 		{
 			throw new NotImplementedException();
 		}

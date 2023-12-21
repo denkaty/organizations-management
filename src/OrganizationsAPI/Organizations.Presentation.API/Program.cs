@@ -1,6 +1,6 @@
-using Organizations.Data;
-using Organizations.Data.Abstraction;
+using Organizations.Data.Abstraction.OrganizationsDatabase.Configuraters;
 using Organizations.Data.Models.Options;
+using Organizations.Data.OrganizationsDatabase.Configuraters;
 using Organizations.Presentation.API.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);

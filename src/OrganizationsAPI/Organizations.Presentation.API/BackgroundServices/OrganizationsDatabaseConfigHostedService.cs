@@ -1,8 +1,8 @@
-﻿using Organizations.Data.Abstraction;
+﻿using Organizations.Data.Abstraction.OrganizationsDatabase.Configuraters;
 
 namespace Organizations.Presentation.API.BackgroundServices
 {
-	public class OrganizationsDatabaseConfigHostedService : BackgroundService
+    public class OrganizationsDatabaseConfigHostedService : BackgroundService
 	{
 		private readonly IOrganizationsDatabaseConfigurator _configurator;
 
