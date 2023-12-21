@@ -8,6 +8,6 @@ namespace Organizations.Data.Abstraction.CRUD.Base
 {
     public interface ICreate<T> where T : class
     {
-        void Add()
+        void Add(T entity);
     }
 }

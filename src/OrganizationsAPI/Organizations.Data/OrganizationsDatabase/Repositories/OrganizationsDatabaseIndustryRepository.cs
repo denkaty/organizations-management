@@ -10,7 +10,7 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 {
 	public class OrganizationsDatabaseIndustryRepository : IOrganizationsDatabaseIndustryRepository
 	{
-		public void Add()
+		public void Add(Industry entity)
 		{
 			throw new NotImplementedException();
 		}

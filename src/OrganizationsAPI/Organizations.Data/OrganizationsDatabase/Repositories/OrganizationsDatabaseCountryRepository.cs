@@ -10,7 +10,8 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 {
 	public class OrganizationsDatabaseCountryRepository : IOrganizationsDatabaseCountryRepository
 	{
-		public void Add()
+
+		public void Add(Country entity)
 		{
 			throw new NotImplementedException();
 		}
