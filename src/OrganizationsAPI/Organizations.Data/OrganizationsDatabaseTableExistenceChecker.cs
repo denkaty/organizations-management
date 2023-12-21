@@ -5,34 +5,33 @@ using Organizations.Data.Models.Options;
 using Organizations.Data.Models.SqlQueries;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Organizations.Data
 {
-    public class OrganizationsDatabaseTableExistenceChecker : IOrganizationsDatabaseTableExistenceChecker
+	public class OrganizationsDatabaseTableExistenceChecker : IOrganizationsDatabaseTableExistenceChecker
 	{
 		private readonly OrganizationsDatabaseOptions _options;
-		private readonly SqlConnection _connection;
 
-		public OrganizationsDatabaseTableExistenceChecker(IOptions<OrganizationsDatabaseOptions> organizationsDatabaseSettings)
+		public OrganizationsDatabaseTableExistenceChecker(IOptions<OrganizationsDatabaseOptions> options)
 		{
-			_options = organizationsDatabaseSettings.Value;
-			_connection = new SqlConnection(_options.ConnectionString);
+			_options = options.Value;
 		}
 
 		public ICollection<string> TableNames => _options.Tables;
 
 		public bool IsTableExisting(string tableName)
 		{
-			try
+			using (var connection = new SqlConnection(_options.ConnectionString))
 			{
-				using (_connection)
+				try
 				{
-					_connection.Open();
+					connection.Open();
 
-					using (SqlCommand command = new SqlCommand(SchemaQueries.IsTableExisting, _connection))
+					using (SqlCommand command = new SqlCommand(SchemaQueries.IsTableExisting, connection))
 					{
 						command.Parameters.AddWithValue("@TableName", tableName);
 
@@ -41,12 +40,12 @@ namespace Organizations.Data
 					}
 
 				}
+				catch (Exception)
+				{
+					throw;
+				}
+			}
 
-			}
-			catch (Exception)
-			{
-				throw;
-			}
 
 		}
 

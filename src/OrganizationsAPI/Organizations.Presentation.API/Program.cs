@@ -1,8 +1,13 @@
 using Organizations.Data;
 using Organizations.Data.Abstraction;
+using Organizations.Data.Models.Options;
 using Organizations.Presentation.API.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var organizationsDatabaseOptions = builder.Configuration.GetSection(nameof(OrganizationsDatabaseOptions));
+
+builder.Services.Configure<OrganizationsDatabaseOptions>(organizationsDatabaseOptions);
 
 builder.Services.AddTransient<IOrganizationsDatabaseConnectionValidator, OrganizationsDatabaseConnectionValidator>();
 builder.Services.AddTransient<IOrganizationsDatabaseTableExistenceChecker, OrganizationsDatabaseTableExistenceChecker>();

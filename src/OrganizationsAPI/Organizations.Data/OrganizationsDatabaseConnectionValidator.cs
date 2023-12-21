@@ -12,20 +12,22 @@ namespace Organizations.Data
 {
 	public class OrganizationsDatabaseConnectionValidator : IOrganizationsDatabaseConnectionValidator
 	{
-		private readonly SqlConnection _sqlConnection;
-		public OrganizationsDatabaseConnectionValidator(IOptions<OrganizationsDatabaseOptions> organizationsDatabaseOptions)
+		private readonly OrganizationsDatabaseOptions _options;
+		public OrganizationsDatabaseConnectionValidator(IOptions<OrganizationsDatabaseOptions> options)
 		{
-			_sqlConnection = new SqlConnection(organizationsDatabaseOptions.Value.ConnectionString);
+			_options = options.Value;
 		}
 
 		public bool IsConnectionValid()
 		{
 			try
 			{
-				_sqlConnection.Open();
-				_sqlConnection.Close();
+				using (var connection = new SqlConnection(_options.ConnectionString))
+				{
+					connection.Open();
+					connection.Close();
+				}
 				return true;
-
 			}
 			catch (SqlException)
 			{

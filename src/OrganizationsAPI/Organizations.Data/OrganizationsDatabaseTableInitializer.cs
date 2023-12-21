@@ -14,14 +14,14 @@ namespace Organizations.Data
 {
 	public class OrganizationsDatabaseTableInitializer : IOrganizationsDatabaseTableInitializer
 	{
-		SqlConnection _connection;
-		public OrganizationsDatabaseTableInitializer(IOptions<OrganizationsDatabaseOptions> _options)
+		private OrganizationsDatabaseOptions _options;
+		public OrganizationsDatabaseTableInitializer(IOptions<OrganizationsDatabaseOptions> options)
 		{
-			_connection = new SqlConnection(_options.Value.ConnectionString);
+			_options = options.Value;
 		}
 		public void CreateTable(string tableName)
 		{
-			using (_connection)
+			using (var connection = new SqlConnection(_options.ConnectionString))
 			{
 				var type = typeof(CreateTableQueries);
 
@@ -31,11 +31,11 @@ namespace Organizations.Data
 				{
 					var query = (string)fieldInfo.GetValue(null);
 
-					_connection.Open();
-					using (var command = new SqlCommand(query, _connection))
+					connection.Open();
+					using (var command = new SqlCommand(query, connection))
 					{
 						command.ExecuteNonQuery();
-					};
+					}
 
 				}
 
