@@ -9,8 +9,6 @@ namespace Organizations.Data.Models.Entities
 {
 	public class Organization : Entity
 	{
-		public string OrganizationId { get; set; }
-
 		public int Index { get; set; }
 
 		public string Name { get; set; }

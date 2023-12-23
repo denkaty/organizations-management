@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Organizations.Data.Models.SqlQueries
+namespace Organizations.Data.Models.SqlQueries.CommonQueries
 {
     public static class SchemaQueries
     {

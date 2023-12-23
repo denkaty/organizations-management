@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Organizations.Data.Models.Entities.Base;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Organizations.Data.Abstraction.CRUD.Base
 {
-    public interface IUpdate<T>
-    {
-        void Update(string id, T entity);
+    public interface IEntiyCreate<T> where T : class, IEntity
+	{
+        void Add(T entity);
     }
 }

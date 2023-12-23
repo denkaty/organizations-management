@@ -1,6 +1,10 @@
+using Organizations.Data.Abstraction.DatabaseContexts;
 using Organizations.Data.Abstraction.OrganizationsDatabase.Configuraters;
+using Organizations.Data.Abstraction.OrganizationsDatabase.Repositories;
+using Organizations.Data.DatabaseContexts;
 using Organizations.Data.Models.Options;
 using Organizations.Data.OrganizationsDatabase.Configuraters;
+using Organizations.Data.OrganizationsDatabase.Repositories;
 using Organizations.Presentation.API.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +18,11 @@ builder.Services.AddTransient<IOrganizationsDatabaseTableExistenceChecker, Organ
 builder.Services.AddTransient<IOrganizationsDatabaseTableInitializer, OrganizationsDatabaseTableInitializer>();
 builder.Services.AddTransient<IOrganizationsDatabaseConfigurator, OrganizationsDatabaseConfigurator>();
 builder.Services.AddHostedService<OrganizationsDatabaseConfigHostedService>();
+builder.Services.AddScoped<IOrganizationsDatabaseCountryRepository, OrganizationsDatabaseCountryRepository>();
+builder.Services.AddScoped<IOrganizationsDatabaseIndustryRepository, OrganizationsDatabaseIndustryRepository>();
+builder.Services.AddScoped<IOrganizationsDatabaseOrganizationRepository, OrganizationsDatabaseOrganizationRepository>();
+builder.Services.AddScoped<IOrganizationsDatabaseOrganizationIndustryRepository, OrganizationsDatabaseOrganizationIndustryRepository>();
+builder.Services.AddScoped<IOrganizationsContext, OrganizationsContext>();
 
 builder.Services.AddControllers();
 

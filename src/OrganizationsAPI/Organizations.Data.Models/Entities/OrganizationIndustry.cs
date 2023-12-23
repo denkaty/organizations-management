@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Organizations.Data.Models.Entities
 {
-	public class OrganizationIndustry
+	public class OrganizationIndustry : Junction
 	{
 		public string OrganizationId { get; set; }	
 		public string IndustryId { get; set; }

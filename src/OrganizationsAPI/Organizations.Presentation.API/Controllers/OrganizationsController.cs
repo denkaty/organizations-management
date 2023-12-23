@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Organizations.Business.Models.DTOs;
+using Organizations.Data.Abstraction.DatabaseContexts;
 
 namespace Organizations.Presentation.API.Controllers
 {
@@ -8,6 +8,11 @@ namespace Organizations.Presentation.API.Controllers
 	[Route("api/[controller]")]
 	public class OrganizationsController : ControllerBase
 	{
+		
+		public OrganizationsController()
+		{
+		}
+
 		[HttpPost]
 		public IActionResult Create([FromBody] CreateOrganizationDTO createOrganizationDTO)
 		{

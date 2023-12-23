@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Organizations.Data.Abstraction.CRUD.Base
 {
-    public interface ICreate<T> where T : class
+    public interface IEntityDelete
     {
-        void Add(T entity);
+        void Delete(string id);
     }
 }

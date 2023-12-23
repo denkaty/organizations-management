@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Options;
 using Organizations.Data.Abstraction.OrganizationsDatabase.Configuraters;
 using Organizations.Data.Models.Options;
-using Organizations.Data.Models.SqlQueries;
+using Organizations.Data.Models.SqlQueries.CommonQueries;
 using System;
 using System.Collections.Generic;
 using System.Linq;

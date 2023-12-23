@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Organizations.Data.Abstraction.OrganizationsDatabase.Repositories
 {
-	public interface IOrganizationsDatabaseCountryRepository : IRepository<Country>
+	public interface IOrganizationsDatabaseCountryRepository : IEntityRepository<Country>
 	{
 	}
 }

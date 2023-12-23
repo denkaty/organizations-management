@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Organizations.Data.Abstraction.CRUD.Base
+namespace Organizations.Data.Models.Entities.Base
 {
-    public interface IDelete
-    {
-        void Delete(string id);
-    }
+	public class Junction : IJunction
+	{
+	}
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Organizations.Data.Abstraction.OrganizationsDatabase.Repositories
 {
-	public interface IOrganizationsDatabaseOrganizationIndustryRepository : IRepository<OrganizationIndustry>
+	public interface IOrganizationsDatabaseOrganizationIndustryRepository : IJunctionRepository<OrganizationIndustry>
 	{
 	}
 }
