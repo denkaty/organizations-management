@@ -8,11 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Organizations.Business.Abstraction\Organizations.Business.Abstraction.csproj" />
     <ProjectReference Include="..\Organizations.Business.Models\Organizations.Business.Models.csproj" />
+    <ProjectReference Include="..\Organizations.Business\Organizations.Business.csproj" />
+    <ProjectReference Include="..\Organizations.Data.Abstraction\Organizations.Data.Abstraction.csproj" />
     <ProjectReference Include="..\Organizations.Data\Organizations.Data.csproj" />
   </ItemGroup>
 
