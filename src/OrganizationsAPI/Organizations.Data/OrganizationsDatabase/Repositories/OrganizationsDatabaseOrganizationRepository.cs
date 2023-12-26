@@ -19,12 +19,12 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 		{
 			_connectionString = options.Value.ConnectionString;
 		}
-		public void Add(Organization entity)
+		public void Create(Organization entity)
 		{
 			InsertOrganization(entity);
 		}
 
-		public Organization Get(string id)
+		public Organization GetById(string id)
 		{
 			Organization? organization = GetOrganizationById(id);
 
@@ -45,12 +45,12 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			return organizations;
 		}
 
-		public void Update(string id, Organization entity)
+		public void UpdateById(string id, Organization entity)
 		{
 			UpdateOrganization(id, entity);
 		}
 
-		public void Delete(string id)
+		public void DeleteById(string id)
 		{
 			DeleteOrganization(id);
 		}

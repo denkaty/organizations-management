@@ -21,15 +21,21 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			_connectionString = options.Value.ConnectionString;
 		}
 
-		public void Add(Country entity)
+		public void Create(Country entity)
 		{
-			InsertCountry(entity);
+			CreateCountry(entity);
 		}
 
-		public Country Get(string id)
+		public Country GetById(string id)
 		{
 			Country? country = GetCountryById(id);
 			
+			return country;
+		}
+		public Country? GetByName(string name)
+		{
+			Country? country = GetCountryByName(name);
+
 			return country;
 		}
 
@@ -47,17 +53,16 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			return countries;
 		}
 
-
-		public void Update(string id, Country entity)
+		public void UpdateById(string id, Country entity)
 		{
-			UpdateCountry(id, entity);
+			UpdateCountryById(id, entity);
 		}
-		public void Delete(string id)
+		public void DeleteById(string id)
 		{
-			DeleteCountry(id);
+			DeleteCountryById(id);
 		}
 
-		private void InsertCountry(Country entity)
+		private void CreateCountry(Country entity)
 		{
 			try
 			{
@@ -112,7 +117,39 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 
 			return country;
 		}
+		private Country? GetCountryByName(string name)
+		{
+			Country country = null;
+			try
+			{
+				using (SqlConnection connection = new SqlConnection(_connectionString))
+				{
+					using (SqlCommand command = connection.CreateCommand())
+					{
+						command.CommandText = CountryTableQueries.GetByName;
+						command.Parameters.AddWithValue("@Name", name);
+						connection.Open();
+						using (SqlDataReader dataReader = command.ExecuteReader())
+						{
+							while (dataReader.Read())
+							{
+								country = new Country
+								{
+									Id = Convert.ToString(dataReader["Id"]),
+									Name = Convert.ToString(dataReader["Name"])
+								};
+							}
+						}
+					}
+				}
+			}
+			catch (Exception)
+			{
+				throw;
+			}
 
+			return country;
+		}
 		private ICollection<Country> FetchCountries()
 		{
 			ICollection<Country> countries = new List<Country>();
@@ -148,7 +185,7 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			return countries;
 		}
 
-		private void UpdateCountry(string id, Country entity)
+		private void UpdateCountryById(string id, Country entity)
 		{
 			try
 			{
@@ -170,7 +207,7 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			}
 		}
 
-		private void DeleteCountry(string id)
+		private void DeleteCountryById(string id)
 		{
 			try
 			{

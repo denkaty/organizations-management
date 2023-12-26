@@ -20,7 +20,7 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			_connectionString = options.Value.ConnectionString;
 		}
 
-		public void Insert(OrganizationIndustry entity)
+		public void Create(OrganizationIndustry entity)
 		{
 			InsertOrganizationIndustry(entity);
 		}
@@ -31,14 +31,14 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			return organizationIndustry;
 		}
 
-		public ICollection<OrganizationIndustry> GetByKey1(string key)
+		public ICollection<OrganizationIndustry> GetByFirstKey(string key)
 		{
 			ICollection<OrganizationIndustry> organizationsIndustries = FetchOrganizationsIndustriesByOrganizationId(key);
 
 			return organizationsIndustries;
 		}
 
-		public ICollection<OrganizationIndustry> GetByKey2(string key)
+		public ICollection<OrganizationIndustry> GetBySecondKey(string key)
 		{
 			ICollection<OrganizationIndustry> organizationsIndustries = FetchOrganizationsIndustriesByIndustryId(key);
 

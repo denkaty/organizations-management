@@ -20,11 +20,11 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			_connectionString = options.Value.ConnectionString;
 		}
 
-		public void Add(Industry entity)
+		public void Create(Industry entity)
 		{
 			InsertIndustry(entity);
 		}
-		public Industry Get(string id)
+		public Industry GetById(string id)
 		{
 			Industry? industry = GetIndustryById(id);
 
@@ -44,12 +44,12 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			return industries;
 		}
 
-		public void Update(string id, Industry entity)
+		public void UpdateById(string id, Industry entity)
 		{
 			UpdateIndustry(id, entity);
 		}
 
-		public void Delete(string id)
+		public void DeleteById(string id)
 		{
 			DeleteIndustry(id);
 		}
