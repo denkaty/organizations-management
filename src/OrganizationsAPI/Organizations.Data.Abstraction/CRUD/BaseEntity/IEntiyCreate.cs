@@ -1,4 +1,4 @@
-﻿using Organizations.Data.Models.Entities.Base;
+﻿using Organizations.Data.Models.Entities.Base.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +9,6 @@ namespace Organizations.Data.Abstraction.CRUD.Base
 {
     public interface IEntiyCreate<T> where T : class, IEntity
 	{
-        void Add(T entity);
+        void Create(T entity);
     }
 }

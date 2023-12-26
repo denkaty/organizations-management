@@ -1,4 +1,4 @@
-﻿using Organizations.Data.Models.Entities.Base;
+﻿using Organizations.Data.Models.Entities.Base.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Organizations.Data.Abstraction.CRUD.BaseJunction
 {
-	public interface IJunctionDelete<T> where T : class, IJunction
+    public interface IJunctionDelete<T> where T : class, IJunction
 	{
 		void DeleteByFirstKey(string key);
 		void DeleteBySecondKey(string key);

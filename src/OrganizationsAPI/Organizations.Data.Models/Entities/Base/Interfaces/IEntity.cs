@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Organizations.Data.Abstraction.CRUD.Base
+namespace Organizations.Data.Models.Entities.Base.Interfaces
 {
-    public interface IEntityDelete
+    public interface IEntity
     {
-        void DeleteById(string id);
+        public string Id { get; set; }
     }
 }

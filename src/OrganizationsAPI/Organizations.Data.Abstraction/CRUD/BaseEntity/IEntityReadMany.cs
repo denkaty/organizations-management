@@ -1,4 +1,4 @@
-﻿using Organizations.Data.Models.Entities.Base;
+﻿using Organizations.Data.Models.Entities.Base.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

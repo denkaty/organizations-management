@@ -1,4 +1,4 @@
-﻿using Organizations.Data.Models.Entities.Base;
+﻿using Organizations.Data.Models.Entities.Base.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Organizations.Data.Abstraction.CRUD.BaseJunction
 {
-	public interface IJunctionReadMany<T> where T : class, IJunction
+    public interface IJunctionReadMany<T> where T : class, IJunction
 	{
-		ICollection<T> GetByKey1(string key);
-		ICollection<T> GetByKey2(string key);
+		ICollection<T> GetByFirstKey(string key);
+		ICollection<T> GetBySecondKey(string key);
 		ICollection<T> GetAll();
 	}
 }

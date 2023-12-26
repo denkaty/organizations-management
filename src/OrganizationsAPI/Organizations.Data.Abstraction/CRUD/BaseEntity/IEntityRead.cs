@@ -1,4 +1,4 @@
-﻿using Organizations.Data.Models.Entities.Base;
+﻿using Organizations.Data.Models.Entities.Base.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +9,6 @@ namespace Organizations.Data.Abstraction.CRUD.Base
 {
     public interface IEntityRead<T> where T : class, IEntity
     {
-        T Get(string id);
+        T GetById(string id);
     }
 }

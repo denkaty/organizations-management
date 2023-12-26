@@ -10,10 +10,9 @@ namespace Organizations.Data.Abstraction.DatabaseContexts
 	public interface IOrganizationsContext
 	{
 		IOrganizationsDatabaseCountryRepository Countries { get; }
-		/*
 		IOrganizationsDatabaseIndustryRepository Industries { get; }
 		IOrganizationsDatabaseOrganizationRepository Organizations { get; }
 		IOrganizationsDatabaseOrganizationIndustryRepository OrganizationsIndustries { get; }
-		*/
+
 	}
 }
