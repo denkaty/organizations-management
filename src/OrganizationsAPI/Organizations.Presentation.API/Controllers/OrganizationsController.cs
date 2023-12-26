@@ -1,14 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Organizations.Business.Models.DTOs;
+using Organizations.Business.Abstraction.Services;
+using Organizations.Business.Models.DTOs.Organization;
 using Organizations.Data.Abstraction.DatabaseContexts;
 
 namespace Organizations.Presentation.API.Controllers
 {
-	[ApiController]
+    [ApiController]
 	[Route("api/[controller]")]
 	public class OrganizationsController : ControllerBase
 	{
-		
+		private readonly IOrganizationService _organizationsService;
+
+		public OrganizationsController(IOrganizationService organizationsService)
+		{
+			_organizationsService = organizationsService;
+		}
+
 		public OrganizationsController()
 		{
 		}
@@ -20,19 +27,20 @@ namespace Organizations.Presentation.API.Controllers
 		}
 
 		[HttpGet]
-		public IActionResult ReadAll()
+		public IActionResult GetAll()
 		{
 			throw new NotImplementedException();
+
 		}
 
 		[HttpGet("{id}")]
-		public IActionResult Read([FromRoute] string id)
+		public IActionResult GetById([FromRoute] string id)
 		{
 			throw new NotImplementedException();
 		}
 
 		[HttpPut("{id}")]
-		public IActionResult Update([FromBody] UpdateOrganizationDTO updateOrganizationDTO, [FromRoute] string id)
+		public IActionResult Update([FromRoute] string id, [FromBody] UpdateOrganizationDTO updateOrganizationDTO)
 		{
 			throw new NotImplementedException();
 		}
