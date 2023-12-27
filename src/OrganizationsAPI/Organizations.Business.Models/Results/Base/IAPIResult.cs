@@ -10,6 +10,7 @@ namespace Organizations.Business.Models.Results.Base
     public interface IAPIResult<T>
     {
         OrganizationsAPIStatusCode StatusCode { get; }
-        T Data { get; }
+		IEnumerable<string> ErrorMessages { get; }
+		T Data { get; }
     }
 }

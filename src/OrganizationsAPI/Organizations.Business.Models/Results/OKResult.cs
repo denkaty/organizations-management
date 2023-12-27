@@ -16,7 +16,7 @@ namespace Organizations.Business.Models.Results
 		}
 
 		public OrganizationsAPIStatusCode StatusCode => OrganizationsAPIStatusCode.OK;
-
+		public IEnumerable<string> ErrorMessages => Enumerable.Empty<string>();
 		public T Data { get; }
 	}
 }

@@ -8,18 +8,17 @@ using System.Threading.Tasks;
 
 namespace Organizations.Business.Models.Results
 {
-	public class NotFoundResult<T> : IAPIResult<T>
+	public class BadRequestResult<T> : IAPIResult<T>
 	{
-        public NotFoundResult(params string[] errorMessages)
-        {
+		public BadRequestResult(params string[] errorMessages)
+		{
 			ErrorMessages = errorMessages ?? Enumerable.Empty<string>();
 		}
 
-        public OrganizationsAPIStatusCode StatusCode => OrganizationsAPIStatusCode.NotFound;
+		public OrganizationsAPIStatusCode StatusCode => OrganizationsAPIStatusCode.BadRequest;
 
 		public IEnumerable<string> ErrorMessages { get; set; }
 
 		public T Data { get; }
-
 	}
 }
