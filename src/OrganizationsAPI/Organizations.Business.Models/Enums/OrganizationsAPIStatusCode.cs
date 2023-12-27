@@ -8,12 +8,12 @@ namespace Organizations.Business.Models.Enums
 {
 	public enum OrganizationsAPIStatusCode
 	{
-		OK,
-		Created,
-		NoContent,
-		NotFound,
-		BadRequest,
-		Unauthorized,
-		Forbidden
+		OK = 200,
+		NoContent = 204,
+		NotFound = 404,
+		MethodNotAllowed = 405,
+		BadRequest = 400,
+		Unauthorized = 401,
+		Forbidden = 403
 	}
 }
