@@ -1,4 +1,7 @@
-﻿using Organizations.Business.Models.DTOs.Organization;
+﻿using Organizations.Business.Abstraction.Factories;
+using Organizations.Business.Models.DTOs.Country;
+using Organizations.Business.Models.DTOs.Organization;
+using Organizations.Business.Models.Results.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +12,11 @@ namespace Organizations.Business.Abstraction.Services
 {
     public interface IOrganizationService
 	{
-		void Create(CreateOrganizationDTO createOrganizationDTO);
+		public IAPIResult<ResultOrganizationDTO> Create(CreateOrganizationDTO createOrganizationDTO);
+		public IAPIResult<ResultOrganizationDTO> GetById(string id);
+		public IAPIResult<ResultOrganizationDTO> GetByName(string name);
+		public IAPIResult<ICollection<ResultOrganizationDTO>> GetAll();
+		public IAPIResult<ResultOrganizationDTO> UpdateById(string id, UpdateOrganizationDTO updateOrganizationDTO);
+		public IAPIResult<ResultOrganizationDTO> DeleteById(string id);
 	}
 }
