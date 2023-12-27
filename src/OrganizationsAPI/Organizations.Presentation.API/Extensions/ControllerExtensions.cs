@@ -13,13 +13,19 @@ namespace Organizations.Presentation.API.Extensions
 			switch (apiResult.StatusCode)
 			{
 				case OrganizationsAPIStatusCode.NotFound:
-					return controller.NotFound();
+					return controller.NotFound(apiResult.ErrorMessages);
+
 				case OrganizationsAPIStatusCode.OK:
 					return controller.Ok(apiResult.Data);
+
 				case OrganizationsAPIStatusCode.NoContent:
 					return controller.NoContent();
+
+				case OrganizationsAPIStatusCode.BadRequest:
+					return controller.BadRequest(apiResult.ErrorMessages);
+
 				default:
-					return controller.BadRequest();
+					throw new Exception();
 			}
 		}
 

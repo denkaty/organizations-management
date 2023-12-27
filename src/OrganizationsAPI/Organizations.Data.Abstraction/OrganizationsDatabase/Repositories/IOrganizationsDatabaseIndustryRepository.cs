@@ -10,5 +10,6 @@ namespace Organizations.Data.Abstraction.OrganizationsDatabase.Repositories
 {
 	public interface IOrganizationsDatabaseIndustryRepository : IEntityRepository<Industry>
 	{
+		Industry? GetByName(string name);
 	}
 }

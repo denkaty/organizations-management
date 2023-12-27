@@ -88,8 +88,8 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 					using (SqlCommand command = connection.CreateCommand())
 					{
 						command.CommandText = OrganizationIndustryTableQueries.Add;
-						command.Parameters.AddWithValue("@OrganizationId", entity.OrganizationId);
-						command.Parameters.AddWithValue("@IndustryId", entity.IndustryId);
+						command.Parameters.AddWithValue("@Organization_Id", entity.Organization_Id);
+						command.Parameters.AddWithValue("@Industry_Id", entity.Industry_Id);
 						connection.Open();
 						command.ExecuteNonQuery();
 					}
@@ -101,7 +101,7 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			}
 		}
 
-		private OrganizationIndustry? GetOrganizationsIndustriesByCompositeKey(string organizationId, string industryId)
+		private OrganizationIndustry? GetOrganizationsIndustriesByCompositeKey(string organization_Id, string industry_Id)
 		{
 			OrganizationIndustry? organizationIndustry = default(OrganizationIndustry);
 
@@ -112,8 +112,8 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 					using (SqlCommand command = connection.CreateCommand())
 					{
 						command.CommandText = OrganizationIndustryTableQueries.GetAll;
-						command.Parameters.AddWithValue("@OrganizationId", organizationId);
-						command.Parameters.AddWithValue("@IndustryId", industryId);
+						command.Parameters.AddWithValue("@Organization_Id", organization_Id);
+						command.Parameters.AddWithValue("@Industry_Id", industry_Id);
 
 						connection.Open();
 						using (SqlDataReader dataReader = command.ExecuteReader())
@@ -122,8 +122,8 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 							{
 								organizationIndustry = new OrganizationIndustry
 								{
-									OrganizationId = Convert.ToString(dataReader["Id"]),
-									IndustryId = Convert.ToString(dataReader["Name"])
+									Organization_Id = Convert.ToString(dataReader["Organization_Id"]),
+									Industry_Id = Convert.ToString(dataReader["Industry_Id"])
 								};
 							}
 						}
@@ -156,8 +156,8 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 							{
 								var organizationIndustry = new OrganizationIndustry
 								{
-									OrganizationId = Convert.ToString(dataReader["Id"]),
-									IndustryId = Convert.ToString(dataReader["Name"])
+									Organization_Id = Convert.ToString(dataReader["Organization_Id"]),
+									Industry_Id = Convert.ToString(dataReader["Industry_Id"])
 								};
 								organizationsIndustries.Add(organizationIndustry);
 							}
@@ -173,7 +173,7 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			return organizationsIndustries;
 		}
 
-		private ICollection<OrganizationIndustry> FetchOrganizationsIndustriesByOrganizationId(string organizationId)
+		private ICollection<OrganizationIndustry> FetchOrganizationsIndustriesByOrganizationId(string organization_Id)
 		{
 			ICollection<OrganizationIndustry> organizationsIndustries = new List<OrganizationIndustry>();
 
@@ -184,7 +184,7 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 					using (SqlCommand command = connection.CreateCommand())
 					{
 						command.CommandText = OrganizationIndustryTableQueries.GetAllByOrganizationId;
-						command.Parameters.AddWithValue("@OrganizationId", organizationId);
+						command.Parameters.AddWithValue("@Organization_Id", organization_Id);
 						connection.Open();
 						using (SqlDataReader dataReader = command.ExecuteReader())
 						{
@@ -193,8 +193,8 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 							{
 								organizationIndustry = new OrganizationIndustry
 								{
-									OrganizationId = Convert.ToString(dataReader["Id"]),
-									IndustryId = Convert.ToString(dataReader["Name"])
+									Organization_Id = Convert.ToString(dataReader["Organization_Id"]),
+									Industry_Id = Convert.ToString(dataReader["Industry_Id"])
 								};
 								organizationsIndustries.Add(organizationIndustry);
 							}
@@ -209,7 +209,7 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 
 			return organizationsIndustries;
 		}
-		private ICollection<OrganizationIndustry> FetchOrganizationsIndustriesByIndustryId(string industryId)
+		private ICollection<OrganizationIndustry> FetchOrganizationsIndustriesByIndustryId(string industry_Id)
 		{
 			ICollection<OrganizationIndustry> organizationsIndustries = new List<OrganizationIndustry>();
 
@@ -220,7 +220,7 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 					using (SqlCommand command = connection.CreateCommand())
 					{
 						command.CommandText = OrganizationIndustryTableQueries.GetAllByOrganizationId;
-						command.Parameters.AddWithValue("@IndustryId", industryId);
+						command.Parameters.AddWithValue("@Industry_Id", industry_Id);
 						connection.Open();
 						using (SqlDataReader dataReader = command.ExecuteReader())
 						{
@@ -229,8 +229,8 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 							{
 								organizationIndustry = new OrganizationIndustry
 								{
-									OrganizationId = Convert.ToString(dataReader["Id"]),
-									IndustryId = Convert.ToString(dataReader["Name"])
+									Organization_Id = Convert.ToString(dataReader["Organization_Id"]),
+									Industry_Id = Convert.ToString(dataReader["Industry_Id"])
 								};
 								organizationsIndustries.Add(organizationIndustry);
 							}
@@ -245,7 +245,7 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 
 			return organizationsIndustries;
 		}
-		private void UpdateOrganizationIndustryByOrganizationId(string id, OrganizationIndustry entity)
+		private void UpdateOrganizationIndustryByOrganizationId(string organization_Id, OrganizationIndustry entity)
 		{
 			try
 			{
@@ -254,8 +254,8 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 					using (SqlCommand command = connection.CreateCommand())
 					{
 						command.CommandText = OrganizationIndustryTableQueries.UpdateByOrganizationId;
-						command.Parameters.AddWithValue("@OrganizationId", id);
-						command.Parameters.AddWithValue("@IndustryId", entity.IndustryId);
+						command.Parameters.AddWithValue("@Organization_Id", organization_Id);
+						command.Parameters.AddWithValue("@Industry_Id", entity.Industry_Id);
 						connection.Open();
 						command.ExecuteNonQuery();
 					}
@@ -267,7 +267,7 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			}
 		}
 
-		private void UpdateOrganizationIndustryByIndustryId(string id, OrganizationIndustry entity)
+		private void UpdateOrganizationIndustryByIndustryId(string industry_Id, OrganizationIndustry entity)
 		{
 			try
 			{
@@ -276,8 +276,8 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 					using (SqlCommand command = connection.CreateCommand())
 					{
 						command.CommandText = OrganizationIndustryTableQueries.UpdateByOrganizationId;
-						command.Parameters.AddWithValue("@IndustryId", id);
-						command.Parameters.AddWithValue("@OrganizationId", entity.OrganizationId);
+						command.Parameters.AddWithValue("@IndustryId", industry_Id);
+						command.Parameters.AddWithValue("@Organization_Id", entity.Organization_Id);
 						connection.Open();
 						command.ExecuteNonQuery();
 					}
@@ -289,7 +289,7 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			}
 		}
 
-		private void DeleteOrganizationIndustryByOrganizationId(string organizationId)
+		private void DeleteOrganizationIndustryByOrganizationId(string organization_Id)
 		{
 			try
 			{
@@ -298,7 +298,7 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 					using (SqlCommand command = connection.CreateCommand())
 					{
 						command.CommandText = OrganizationIndustryTableQueries.DeleteByOrganizationId;
-						command.Parameters.AddWithValue("@OrganizationId", organizationId);
+						command.Parameters.AddWithValue("@Organization_Id", organization_Id);
 						connection.Open();
 						command.ExecuteNonQuery();
 					}
@@ -310,7 +310,7 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			}
 		}
 
-		private void DeleteOrganizationIndustryByIndustryId(string industryId)
+		private void DeleteOrganizationIndustryByIndustryId(string industry_Id)
 		{
 			try
 			{
@@ -319,7 +319,7 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 					using (SqlCommand command = connection.CreateCommand())
 					{
 						command.CommandText = OrganizationIndustryTableQueries.DeleteByOrganizationId;
-						command.Parameters.AddWithValue("@IndustryId", industryId);
+						command.Parameters.AddWithValue("@Industry_Id", industry_Id);
 						connection.Open();
 						command.ExecuteNonQuery();
 					}
@@ -331,7 +331,7 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			}
 		}
 
-		private void DeleteOrganizationIndustryByCompositeKey(string organizationId, string industryId)
+		private void DeleteOrganizationIndustryByCompositeKey(string organization_Id, string industry_Id)
 		{
 			try
 			{
@@ -340,8 +340,8 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 					using (SqlCommand command = connection.CreateCommand())
 					{
 						command.CommandText = OrganizationIndustryTableQueries.DeleteByOrganizationId;
-						command.Parameters.AddWithValue("@OrganizationId", organizationId);
-						command.Parameters.AddWithValue("@IndustryId", industryId);
+						command.Parameters.AddWithValue("@Organization_Id", organization_Id);
+						command.Parameters.AddWithValue("@Industry_Id", industry_Id);
 						connection.Open();
 						command.ExecuteNonQuery();
 					}

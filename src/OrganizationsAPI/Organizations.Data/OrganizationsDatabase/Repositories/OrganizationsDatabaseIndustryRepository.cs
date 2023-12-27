@@ -109,6 +109,39 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 
 			return industry;
 		}
+		public Industry? GetByName(string name)
+		{
+			Industry? industry = null;
+			try
+			{
+				using (SqlConnection connection = new SqlConnection(_connectionString))
+				{
+					using (SqlCommand command = connection.CreateCommand())
+					{
+						command.CommandText = IndustryTableQueries.GetByName;
+						command.Parameters.AddWithValue("@Name", name);
+						connection.Open();
+						using (SqlDataReader dataReader = command.ExecuteReader())
+						{
+							while (dataReader.Read())
+							{
+								industry = new Industry
+								{
+									Id = Convert.ToString(dataReader["Id"]),
+									Name = Convert.ToString(dataReader["Name"])
+								};
+							}
+						}
+					}
+				}
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+
+			return industry;
+		}
 		private ICollection<Industry> FetchIndustries()
 		{
 			ICollection<Industry> industries = new List<Industry>();
@@ -186,5 +219,6 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 				throw;
 			}
 		}
+
 	}
 }

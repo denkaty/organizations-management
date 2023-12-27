@@ -8,9 +8,11 @@ namespace Organizations.Data.Models.SqlQueries
 {
 	public static class IndustryTableQueries
 	{
-		public const string Add = "INSERT INTO Industry(Id, Name) Industry VALUES(@Id, @Name)";
+		public const string Add = "INSERT INTO Industry(Id, Name) VALUES(@Id, @Name)";
 
-		public const string GetById = "SELECT * FROM Industry where Id = @Id";
+		public const string GetById = "SELECT * FROM Industry WHERE Id = @Id";
+
+		public static string GetByName = "SELECT * FROM Industry WHERE Name = @Name";
 
 		public const string GetAll = "SELECT * FROM Industry";
 

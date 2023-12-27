@@ -9,7 +9,7 @@ namespace Organizations.Data.Models.Entities
 {
 	public class OrganizationIndustry : Junction
 	{
-		public string OrganizationId { get; set; }	
-		public string IndustryId { get; set; }
+		public string Organization_Id { get; set; }	
+		public string Industry_Id { get; set; }
 	}
 }

@@ -9,7 +9,7 @@ namespace Organizations.Data.Models.Entities
 {
 	public class Organization : Entity
 	{
-		public int Index { get; set; }
+		public string OrganizationId { get; set; }
 
 		public string Name { get; set; }
 
@@ -19,7 +19,7 @@ namespace Organizations.Data.Models.Entities
 
 		public int Founded { get; set; }
 
-		public int NumberOfEmployees { get; set; }
+		public int Employees { get; set; }
 
 		public string CountryId { get; set; }
 	}

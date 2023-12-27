@@ -65,12 +65,12 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 					{
 						command.CommandText = OrganizationTableQueries.Add;
 						command.Parameters.AddWithValue("@Id", entity.Id);
-						command.Parameters.AddWithValue("@Index", entity.Index);
+						command.Parameters.AddWithValue("@OrganizationId", entity.OrganizationId);
 						command.Parameters.AddWithValue("@Name", entity.Name);
 						command.Parameters.AddWithValue("@Website", entity.Website);
 						command.Parameters.AddWithValue("@Description", entity.Description);
 						command.Parameters.AddWithValue("@Founded_year", entity.Founded);
-						command.Parameters.AddWithValue("@Number_of_employees", entity.NumberOfEmployees);
+						command.Parameters.AddWithValue("@Employees", entity.Employees);
 						command.Parameters.AddWithValue("@Country_Id", entity.CountryId);
 						connection.Open();
 						command.ExecuteNonQuery();
@@ -102,12 +102,12 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 								organization = new Organization
 								{
 									Id = Convert.ToString(dataReader["Id"]),
-									Index = Convert.ToInt32(dataReader["Index"]),
+									OrganizationId = Convert.ToString(dataReader["OrganizationId"]),
 									Name = Convert.ToString(dataReader["Name"]),
 									Website = Convert.ToString(dataReader["Website"]),
 									Description = Convert.ToString(dataReader["Description"]),
 									Founded = Convert.ToInt32(dataReader["Founded_year"]),
-									NumberOfEmployees = Convert.ToInt32(dataReader["Number_of_employees"]),
+									Employees = Convert.ToInt32(dataReader["Employees"]),
 									CountryId = Convert.ToString(dataReader["Country_Id"])
 								};
 							}
@@ -122,7 +122,45 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 
 			return organization;
 		}
+		public Organization? GetByName(string name)
+		{
+			Organization organization = null;
+			try
+			{
+				using (SqlConnection connection = new SqlConnection(_connectionString))
+				{
+					using (SqlCommand command = connection.CreateCommand())
+					{
+						command.CommandText = OrganizationTableQueries.GetByName;
+						command.Parameters.AddWithValue("@Name", name);
+						connection.Open();
+						using (SqlDataReader dataReader = command.ExecuteReader())
+						{
+							while (dataReader.Read())
+							{
+								organization = new Organization
+								{
+									Id = Convert.ToString(dataReader["Id"]),
+									OrganizationId = Convert.ToString(dataReader["OrganizationId"]),
+									Name = Convert.ToString(dataReader["Name"]),
+									Website = Convert.ToString(dataReader["Website"]),
+									Description = Convert.ToString(dataReader["Description"]),
+									Founded = Convert.ToInt32(dataReader["Founded_year"]),
+									Employees = Convert.ToInt32(dataReader["Employees"]),
+									CountryId = Convert.ToString(dataReader["Country_Id"])
+								};
+							}
+						}
+					}
+				}
+			}
+			catch (Exception)
+			{
+				throw;
+			}
 
+			return organization;
+		}
 		private ICollection<Organization> FetchOrganizations()
 		{
 			ICollection<Organization> organizations = new List<Organization>();
@@ -142,12 +180,12 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 								var organization = new Organization
 								{
 									Id = Convert.ToString(dataReader["Id"]),
-									Index = Convert.ToInt32(dataReader["Index"]),
+									OrganizationId = Convert.ToString(dataReader["OrganizationId"]),
 									Name = Convert.ToString(dataReader["Name"]),
 									Website = Convert.ToString(dataReader["Website"]),
 									Description = Convert.ToString(dataReader["Description"]),
 									Founded = Convert.ToInt32(dataReader["Founded_year"]),
-									NumberOfEmployees = Convert.ToInt32(dataReader["Number_of_employees"]),
+									Employees = Convert.ToInt32(dataReader["Employees"]),
 									CountryId = Convert.ToString(dataReader["Country_Id"])
 								};
 								organizations.Add(organization);
@@ -174,12 +212,12 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 					{
 						command.CommandText = OrganizationTableQueries.Update;
 						command.Parameters.AddWithValue("@Id", id);
-						command.Parameters.AddWithValue("@Index", entity.Index);
+						command.Parameters.AddWithValue("@OrganizationId", entity.OrganizationId);
 						command.Parameters.AddWithValue("@Name", entity.Name);
 						command.Parameters.AddWithValue("@Website", entity.Website);
 						command.Parameters.AddWithValue("@Description", entity.Description);
 						command.Parameters.AddWithValue("@Founded_year", entity.Founded);
-						command.Parameters.AddWithValue("@Number_of_employees", entity.NumberOfEmployees);
+						command.Parameters.AddWithValue("@Employees", entity.Employees);
 						command.Parameters.AddWithValue("@Country_Id", entity.CountryId);
 						connection.Open();
 						command.ExecuteNonQuery();
@@ -213,5 +251,6 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			}
 		}
 
+		
 	}
 }

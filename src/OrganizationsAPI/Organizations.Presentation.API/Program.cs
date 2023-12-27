@@ -32,6 +32,7 @@ builder.Services.AddScoped<IAPIResultFactory, APIResultFactory>();
 builder.Services.AddScoped<IOrganizationsContext, OrganizationsContext>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<IOrganizationService, OrganizationService>();
+builder.Services.AddScoped<IIndustryService, IndustryService>();
 
 builder.Services.AddControllers();
 
