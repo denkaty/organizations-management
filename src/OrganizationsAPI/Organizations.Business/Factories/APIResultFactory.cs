@@ -11,19 +11,24 @@ namespace Organizations.Business.Factories
 {
 	public class APIResultFactory : IAPIResultFactory
 	{
+
 		public IAPIResult<T> GetNoContentResult<T>()
 		{
 			return new NoContentResult<T>();
 		}
 
-		public IAPIResult<T> GetNotFoundResult<T>()
+		public IAPIResult<T> GetNotFoundResult<T>(params string[] errorMessages)
 		{
-			return new NotFoundResult<T>();
+			return new NotFoundResult<T>(errorMessages);
 		}
 
 		public IAPIResult<T> GetOKResult<T>(T data = default)
 		{
 			return new OKResult<T>(data);
+		}
+		public IAPIResult<T> GetBadRequestResult<T>(params string[] errorMessages)
+		{
+			return new BadRequestResult<T>(errorMessages);
 		}
 	}
 }
