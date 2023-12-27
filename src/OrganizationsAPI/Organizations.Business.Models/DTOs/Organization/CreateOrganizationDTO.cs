@@ -8,6 +8,7 @@ namespace Organizations.Business.Models.DTOs.Organization
 {
     public class CreateOrganizationDTO
     {
+        public string OrganizationId { get; set; }
         public string Name { get; set; }
         public string Website { get; set; }
         public string Country { get; set; }
