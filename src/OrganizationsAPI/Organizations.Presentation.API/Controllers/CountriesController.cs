@@ -17,6 +17,8 @@ namespace Organizations.Presentation.API.Controllers
 		}
 
 		[HttpPost]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public IActionResult Create([FromBody] CreateCountryDTO createCountryDTO)
 		{
 			var apiResult = _countryService.Create(createCountryDTO);
@@ -24,7 +26,9 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
-		[HttpGet("id/{id}")]
+		[HttpGet("GetCountryById/{id}")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public IActionResult GetById([FromRoute] string id)
 		{
 			var apiResult = _countryService.GetById(id);
@@ -32,7 +36,9 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
-		[HttpGet("name/{name}")]
+		[HttpGet("GetCountryByName/{name}")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public IActionResult GetByName([FromRoute] string name)
 		{
 			var apiResult = _countryService.GetByName(name);
@@ -40,7 +46,8 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
-		[HttpGet]
+		[HttpGet("GetAllCountries")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
 		public IActionResult GetAll()
 		{
 			var apiResult = _countryService.GetAll();
@@ -49,7 +56,10 @@ namespace Organizations.Presentation.API.Controllers
 
 		}
 
-		[HttpPut("{id}")]
+		[HttpPut("UpdateCountryById/{id}")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public IActionResult UpdateById([FromRoute] string id, [FromBody] UpdateCountryDTO updateCountryDTO)
 		{
 			var apiResult = _countryService.UpdateById(id, updateCountryDTO);
@@ -57,10 +67,24 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
-		[HttpDelete("{id}")]
-		public IActionResult DeleteById([FromRoute] string id)
+		[HttpDelete("SoftDeleteCountryById/{id}")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		public IActionResult SoftDeleteById([FromRoute] string id)
 		{
-			var apiResult = _countryService.DeleteById(id);
+			var apiResult = _countryService.SoftDeleteById(id);
+
+			return this.HandleResponse(apiResult);
+		}
+
+		[HttpPut("RestoreCountryById/{id}")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		public IActionResult RestoreById([FromRoute] string id)
+		{
+			var apiResult = _countryService.RestoreById(id);
 
 			return this.HandleResponse(apiResult);
 		}

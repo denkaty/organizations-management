@@ -17,5 +17,6 @@ namespace Organizations.Business.Models.DTOs.Organization
 		public int Employees { get; set; }
 		public string CountryId { get; set; }
 		public ICollection<string> Industries { get; set; }
+		public bool IsDeleted { get;set; }
 	}
 }

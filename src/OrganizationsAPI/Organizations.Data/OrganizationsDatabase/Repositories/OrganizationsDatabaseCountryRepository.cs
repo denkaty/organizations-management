@@ -57,9 +57,13 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 		{
 			UpdateCountryById(id, entity);
 		}
-		public void DeleteById(string id)
+		public void SoftDeleteById(string id)
 		{
-			DeleteCountryById(id);
+			SoftDeleteCountryById(id);
+		}
+		public void RestoreById(string id)
+		{
+			RestoreCountryById(id);
 		}
 
 		private void CreateCountry(Country entity)
@@ -103,7 +107,8 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 								country = new Country
 								{
 									Id = Convert.ToString(dataReader["Id"]),
-									Name = Convert.ToString(dataReader["Name"])
+									Name = Convert.ToString(dataReader["Name"]),
+									IsDeleted = Convert.ToBoolean(dataReader["IsDeleted"])
 								};
 							}
 						}
@@ -136,7 +141,8 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 								country = new Country
 								{
 									Id = Convert.ToString(dataReader["Id"]),
-									Name = Convert.ToString(dataReader["Name"])
+									Name = Convert.ToString(dataReader["Name"]),
+									IsDeleted = Convert.ToBoolean(dataReader["IsDeleted"])
 								};
 							}
 						}
@@ -169,7 +175,8 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 								var country = new Country
 								{
 									Id = Convert.ToString(dataReader["Id"]),
-									Name = Convert.ToString(dataReader["Name"])
+									Name = Convert.ToString(dataReader["Name"]),
+									IsDeleted = Convert.ToBoolean(dataReader["IsDeleted"])
 								};
 								countries.Add(country);
 							}
@@ -207,7 +214,7 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			}
 		}
 
-		private void DeleteCountryById(string id)
+		private void SoftDeleteCountryById(string id)
 		{
 			try
 			{
@@ -215,7 +222,28 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 				{
 					using (SqlCommand command = connection.CreateCommand())
 					{
-						command.CommandText = CountryTableQueries.Delete;
+						command.CommandText = CountryTableQueries.SoftDelete;
+						command.Parameters.AddWithValue("@Id", id);
+						connection.Open();
+						command.ExecuteNonQuery();
+					}
+				}
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
+
+		private void RestoreCountryById(string id)
+		{
+			try
+			{
+				using (SqlConnection connection = new SqlConnection(_connectionString))
+				{
+					using (SqlCommand command = connection.CreateCommand())
+					{
+						command.CommandText = CountryTableQueries.Restore;
 						command.Parameters.AddWithValue("@Id", id);
 						connection.Open();
 						command.ExecuteNonQuery();

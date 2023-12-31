@@ -3,111 +3,146 @@ using Organizations.Business.Abstraction.Factories;
 using Organizations.Business.Abstraction.Services;
 using Organizations.Business.Models.DTOs.Country;
 using Organizations.Business.Models.DTOs.Industry;
-using Organizations.Business.Models.DTOs.Industry;
 using Organizations.Business.Models.Results.Base;
+using Organizations.Data.Abstraction.DatabaseContexts;
 using Organizations.Data.Abstraction.OrganizationsDatabase.Repositories;
 using Organizations.Data.Models.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Organizations.Business.Services
 {
 	public class IndustryService : IIndustryService
 	{
-		private readonly IOrganizationsDatabaseIndustryRepository _industryRepository;
+		private readonly IOrganizationsContext _organizationsContext;
 		private readonly IAPIResultFactory _apiResultFactory;
 		private readonly IMapper _mapper;
 
-		public IndustryService(IOrganizationsDatabaseIndustryRepository industryRepository,
+		public IndustryService(IOrganizationsContext organizationsContext,
 							  IMapper mapper,
 							  IAPIResultFactory apiResultFactory)
 		{
-			_industryRepository = industryRepository;
+			_organizationsContext = organizationsContext;
 			_mapper = mapper;
 			_apiResultFactory = apiResultFactory;
 		}
 		public IAPIResult<ResultIndustryDTO> Create(CreateIndustryDTO createIndustryDTO)
 		{
-			Industry? existingIndustry = _industryRepository.GetByName(createIndustryDTO.Name);
-			ResultIndustryDTO resultIndustryDTO;
-			if (existingIndustry == null)
-			{
-				Industry createdIndustry = _mapper.Map<Industry>(createIndustryDTO);
-				_industryRepository.Create(createdIndustry);
+			Industry? existingIndustry = _organizationsContext.Industries.GetByName(createIndustryDTO.Name);
 
-				resultIndustryDTO = _mapper.Map<ResultIndustryDTO>(createdIndustry);
-				return _apiResultFactory.GetOKResult(resultIndustryDTO);
+			if(existingIndustry != null) {
+				if (existingIndustry.IsDeleted)
+				{
+					return _apiResultFactory.GetBadRequestResult<ResultIndustryDTO>(
+						string.Format(Messages.ResourceIsSoftDeleted, "Industry", createIndustryDTO.Name));
+				}
+
+				return _apiResultFactory.GetBadRequestResult<ResultIndustryDTO>(
+						string.Format(Messages.ResourceExists, "Industry", createIndustryDTO.Name));
 			}
 
-			resultIndustryDTO = _mapper.Map<ResultIndustryDTO>(existingIndustry);
+			Industry createdIndustry = _mapper.Map<Industry>(createIndustryDTO);
+			_organizationsContext.Industries.Create(createdIndustry);
+
+			ResultIndustryDTO resultIndustryDTO = _mapper.Map<ResultIndustryDTO>(createdIndustry);
 			return _apiResultFactory.GetOKResult(resultIndustryDTO);
 		}
 
 		public IAPIResult<ResultIndustryDTO> GetById(string id)
 		{
-			Industry? existingIndustry = _industryRepository.GetById(id);
-			if (existingIndustry is null)
-			{
-				return _apiResultFactory.GetNotFoundResult<ResultIndustryDTO>();
-			}
-
-			ResultIndustryDTO resultIndustryDTO = _mapper.Map<ResultIndustryDTO>(existingIndustry);
-			return _apiResultFactory.GetOKResult(resultIndustryDTO);
+			Industry? existingIndustry = _organizationsContext.Industries.GetById(id);
+			
+			return existingIndustry == null
+				   ? _apiResultFactory.GetNotFoundResult<ResultIndustryDTO>(string.Format(Messages.ResourceNotFound, "Industry", id))
+				   : _apiResultFactory.GetOKResult(_mapper.Map<ResultIndustryDTO>(existingIndustry));
 		}
 
 		public IAPIResult<ResultIndustryDTO> GetByName(string name)
 		{
-			Industry? existingIndustry = _industryRepository.GetByName(name);
-			if (existingIndustry is null)
-			{
-				return _apiResultFactory.GetNotFoundResult<ResultIndustryDTO>();
-			}
+			Industry? existingIndustry = _organizationsContext.Industries.GetByName(name);
 
-			ResultIndustryDTO resultIndustryDTO = _mapper.Map<ResultIndustryDTO>(existingIndustry);
-			return _apiResultFactory.GetOKResult(resultIndustryDTO);
+			return existingIndustry == null
+				   ? _apiResultFactory.GetNotFoundResult<ResultIndustryDTO>(string.Format(Messages.ResourceNotFound, "Industry", name))
+				   : _apiResultFactory.GetOKResult(_mapper.Map<ResultIndustryDTO>(existingIndustry));
 		}
 
 		public IAPIResult<ICollection<ResultIndustryDTO>> GetAll()
 		{
-			var existingIndustries = _industryRepository.GetAll();
-
-			var resultIndustryDTOs = _mapper.Map<ICollection<ResultIndustryDTO>>(existingIndustries);
+			ICollection<Industry> existingIndustries = _organizationsContext.Industries.GetAll();
+			ICollection<ResultIndustryDTO> resultIndustryDTOs = _mapper.Map<ICollection<ResultIndustryDTO>>(existingIndustries);
 
 			return _apiResultFactory.GetOKResult(resultIndustryDTOs);
 		}
 		public IAPIResult<ResultIndustryDTO> UpdateById(string id, UpdateIndustryDTO updateIndustryDTO)
 		{
-			Industry? existingIndustry = _industryRepository.GetById(id);
+			Industry? existingIndustry = _organizationsContext.Industries.GetById(id);
 
-			if (existingIndustry is null)
+			if (existingIndustry == null)
 			{
-				return _apiResultFactory.GetNotFoundResult<ResultIndustryDTO>();
+				return _apiResultFactory.GetNotFoundResult<ResultIndustryDTO>(string.Format(Messages.ResourceNotFound, "Industry", id));
+
 			}
 
-			_mapper.Map(updateIndustryDTO, existingIndustry);
-
-			_industryRepository.UpdateById(id, existingIndustry);
-
-			var resultIndustryDTO = _mapper.Map<ResultIndustryDTO>(existingIndustry);
-
-			return _apiResultFactory.GetOKResult(resultIndustryDTO);
-		}
-
-		public IAPIResult<ResultIndustryDTO> DeleteById(string id)
-		{
-			Industry? existingIndustry = _industryRepository.GetById(id);
-
-			if (existingIndustry is null)
+			if(existingIndustry.Name == updateIndustryDTO.Name)
 			{
-				return _apiResultFactory.GetNotFoundResult<ResultIndustryDTO>();
+				return _apiResultFactory.GetBadRequestResult<ResultIndustryDTO>(string.Format(Messages.ResourceNameSameAsBefore, "Industry", existingIndustry.Name));
 			}
 
-			_industryRepository.DeleteById(id);
+			bool providedNameIsAlreadyUsed = _organizationsContext
+										     .Industries
+											 .GetAll(industry => industry.Name == updateIndustryDTO.Name)
+											 .Any();
+			if (providedNameIsAlreadyUsed)
+			{
+				return _apiResultFactory.GetBadRequestResult<ResultIndustryDTO>(string.Format(Messages.ResourceNameAlreadyExists, "Industry", updateIndustryDTO.Name));
+			}
+
+			existingIndustry = _mapper.Map(updateIndustryDTO, existingIndustry);
+			_organizationsContext.Industries.UpdateById(id, existingIndustry);
+
 			return _apiResultFactory.GetNoContentResult<ResultIndustryDTO>();
 		}
-		
+
+		public IAPIResult<ResultIndustryDTO> SoftDeleteById(string id)
+		{
+			Industry? existingIndustry = _organizationsContext.Industries.GetById(id);
+
+			if (existingIndustry == null)
+			{
+				return _apiResultFactory.GetNotFoundResult<ResultIndustryDTO>(string.Format(Messages.ResourceNotFound, "Industry", id));
+			}
+
+			if (existingIndustry.IsDeleted)
+			{
+				return _apiResultFactory.GetBadRequestResult<ResultIndustryDTO>(string.Format(Messages.ResourceIsSoftDeleted, "Industry", id));
+			}
+
+			_organizationsContext.Industries.SoftDeleteById(id);
+
+			IEnumerable<OrganizationIndustry> organizationsIndustries = _organizationsContext.OrganizationsIndustries.GetAll(organization => organization.Industry_Id == id);
+			foreach (var organizationIndustry in organizationsIndustries)
+			{
+				_organizationsContext.OrganizationsIndustries.DeleteByCompositeKey(organizationIndustry.Organization_Id, organizationIndustry.Industry_Id);
+			}
+
+			return _apiResultFactory.GetNoContentResult<ResultIndustryDTO>();
+		}
+
+		public IAPIResult<ResultIndustryDTO> RestoreById(string id)
+		{
+			var existingIndustry = _organizationsContext.Industries.GetById(id);
+
+			if (existingIndustry == null)
+			{
+				return _apiResultFactory.GetNotFoundResult<ResultIndustryDTO>(string.Format(Messages.ResourceNotFound, "Industry", id));
+			}
+
+			if (!existingIndustry.IsDeleted)
+			{
+				return _apiResultFactory.GetBadRequestResult<ResultIndustryDTO>(string.Format(Messages.ResourceIsNotSoftDeleted, "Industry", id));
+			}
+
+			_organizationsContext.Industries.RestoreById(id);
+			return _apiResultFactory.GetNoContentResult<ResultIndustryDTO>();
+		}
+
 	}
 }

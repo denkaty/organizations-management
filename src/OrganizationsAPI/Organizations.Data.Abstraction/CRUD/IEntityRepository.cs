@@ -1,4 +1,5 @@
 ﻿using Organizations.Data.Abstraction.CRUD.Base;
+using Organizations.Data.Abstraction.CRUD.BaseEntity;
 using Organizations.Data.Models.Entities.Base.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,8 @@ namespace Organizations.Data.Abstraction.CRUD
 											IEntityRead<T>,
 											IEntityReadMany<T>,
 											IEntityUpdate<T>,
-											IEntityDelete 
+											IEntitySoftDelete,
+											IEntityRestore
 											where T : class, IEntity
 	{
 	}

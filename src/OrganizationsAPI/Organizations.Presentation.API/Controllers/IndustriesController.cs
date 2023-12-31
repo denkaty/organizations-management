@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Organizations.Business.Abstraction.Services;
 using Organizations.Business.Models.DTOs.Country;
 using Organizations.Business.Models.DTOs.Industry;
+using Organizations.Business.Services;
 using Organizations.Presentation.API.Extensions;
 
 namespace Organizations.Presentation.API.Controllers
@@ -17,7 +18,9 @@ namespace Organizations.Presentation.API.Controllers
 			_industryService = industryService;
 		}
 
-		[HttpPost]
+		[HttpPost("CreateIndustry")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public IActionResult Create([FromBody] CreateIndustryDTO createIndustryDTO)
 		{
 			var apiResult = _industryService.Create(createIndustryDTO);
@@ -25,7 +28,9 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
-		[HttpGet("id/{id}")]
+		[HttpGet("GetIndustryById/{id}")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public IActionResult GetById([FromRoute] string id)
 		{
 			var apiResult = _industryService.GetById(id);
@@ -33,7 +38,9 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
-		[HttpGet("name/{name}")]
+		[HttpGet("GetIndustryByName/{name}")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public IActionResult GetByName([FromRoute] string name)
 		{
 			var apiResult = _industryService.GetByName(name);
@@ -41,7 +48,8 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
-		[HttpGet]
+		[HttpGet("GetAllIndustries")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
 		public IActionResult GetAll()
 		{
 			var apiResult = _industryService.GetAll();
@@ -50,7 +58,10 @@ namespace Organizations.Presentation.API.Controllers
 
 		}
 
-		[HttpPut("{id}")]
+		[HttpPut("UpdateIndustryById/{id}")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public IActionResult UpdateById([FromRoute] string id, [FromBody] UpdateIndustryDTO updateIndustryDTO)
 		{
 			var apiResult = _industryService.UpdateById(id, updateIndustryDTO);
@@ -58,10 +69,24 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
-		[HttpDelete("{id}")]
+		[HttpDelete("SoftDeleteIndustryById/{id}")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public IActionResult DeleteById([FromRoute] string id)
 		{
-			var apiResult = _industryService.DeleteById(id);
+			var apiResult = _industryService.SoftDeleteById(id);
+
+			return this.HandleResponse(apiResult);
+		}
+
+		[HttpPut("RestoreCountryById/{id}")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		public IActionResult RestoreById([FromRoute] string id)
+		{
+			var apiResult = _industryService.RestoreById(id);
 
 			return this.HandleResponse(apiResult);
 		}

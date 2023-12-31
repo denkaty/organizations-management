@@ -18,7 +18,8 @@ namespace Organizations.Data.Models.SqlQueries
 
 		public const string Update = "UPDATE Country SET Name = @Name WHERE Id = @Id";
 
-		public const string Delete = "DELETE FROM Country WHERE Id = @Id";
+		public const string SoftDelete = "UPDATE Country SET IsDeleted = 1 WHERE Id = @Id";
 
+		public const string Restore = "UPDATE Country SET IsDeleted = 0 WHERE Id = @Id";
 	}
 }

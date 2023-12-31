@@ -24,7 +24,7 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			InsertOrganization(entity);
 		}
 
-		public Organization GetById(string id)
+		public Organization? GetById(string id)
 		{
 			Organization? organization = GetOrganizationById(id);
 
@@ -50,7 +50,16 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			UpdateOrganization(id, entity);
 		}
 
-		public void DeleteById(string id)
+		public void UpdateCountryToNull(string id)
+		{
+			SetCountryIdToNull(id);
+		}
+		public void UpdateCountry(string organizationId, string countryId)
+		{
+			UpdateCountryId(organizationId, countryId);
+		}
+
+		public void SoftDeleteById(string id)
 		{
 			DeleteOrganization(id);
 		}
@@ -108,7 +117,8 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 									Description = Convert.ToString(dataReader["Description"]),
 									Founded = Convert.ToInt32(dataReader["Founded_year"]),
 									Employees = Convert.ToInt32(dataReader["Employees"]),
-									CountryId = Convert.ToString(dataReader["Country_Id"])
+									CountryId = Convert.ToString(dataReader["Country_Id"]),
+									IsDeleted = Convert.ToBoolean(dataReader["IsDeleted"])
 								};
 							}
 						}
@@ -147,7 +157,8 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 									Description = Convert.ToString(dataReader["Description"]),
 									Founded = Convert.ToInt32(dataReader["Founded_year"]),
 									Employees = Convert.ToInt32(dataReader["Employees"]),
-									CountryId = Convert.ToString(dataReader["Country_Id"])
+									CountryId = Convert.ToString(dataReader["Country_Id"]),
+									IsDeleted = Convert.ToBoolean(dataReader["IsDeleted"])
 								};
 							}
 						}
@@ -186,7 +197,8 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 									Description = Convert.ToString(dataReader["Description"]),
 									Founded = Convert.ToInt32(dataReader["Founded_year"]),
 									Employees = Convert.ToInt32(dataReader["Employees"]),
-									CountryId = Convert.ToString(dataReader["Country_Id"])
+									CountryId = Convert.ToString(dataReader["Country_Id"]),
+									IsDeleted = Convert.ToBoolean(dataReader["IsDeleted"])
 								};
 								organizations.Add(organization);
 							}
@@ -212,7 +224,6 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 					{
 						command.CommandText = OrganizationTableQueries.Update;
 						command.Parameters.AddWithValue("@Id", id);
-						command.Parameters.AddWithValue("@OrganizationId", entity.OrganizationId);
 						command.Parameters.AddWithValue("@Name", entity.Name);
 						command.Parameters.AddWithValue("@Website", entity.Website);
 						command.Parameters.AddWithValue("@Description", entity.Description);
@@ -238,7 +249,27 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 				{
 					using (SqlCommand command = connection.CreateCommand())
 					{
-						command.CommandText = OrganizationTableQueries.Delete;
+						command.CommandText = OrganizationTableQueries.SoftDelete;
+						command.Parameters.AddWithValue("@Id", id);
+						connection.Open();
+						command.ExecuteNonQuery();
+					}
+				}
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
+		public void RestoreById(string id)
+		{
+			try
+			{
+				using (SqlConnection connection = new SqlConnection(_connectionString))
+				{
+					using (SqlCommand command = connection.CreateCommand())
+					{
+						command.CommandText = OrganizationTableQueries.Restore;
 						command.Parameters.AddWithValue("@Id", id);
 						connection.Open();
 						command.ExecuteNonQuery();
@@ -251,6 +282,47 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			}
 		}
 
-		
+		private void SetCountryIdToNull(string id)
+		{
+			try
+			{
+				using (SqlConnection connection = new SqlConnection(_connectionString))
+				{
+					using (SqlCommand command = connection.CreateCommand())
+					{
+						command.CommandText = OrganizationTableQueries.UpdateCountryIdToNull;
+						command.Parameters.AddWithValue("@Id", id);
+						connection.Open();
+						command.ExecuteNonQuery();
+					}
+				}
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
+
+		private void UpdateCountryId(string organizationId, string countryId)
+		{
+			try
+			{
+				using (SqlConnection connection = new SqlConnection(_connectionString))
+				{
+					using (SqlCommand command = connection.CreateCommand())
+					{
+						command.CommandText = OrganizationTableQueries.UpdateCountryId;
+						command.Parameters.AddWithValue("@Id", organizationId);
+						command.Parameters.AddWithValue("@UpdatedCountryId", countryId);
+						connection.Open();
+						command.ExecuteNonQuery();
+					}
+				}
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
 	}
 }

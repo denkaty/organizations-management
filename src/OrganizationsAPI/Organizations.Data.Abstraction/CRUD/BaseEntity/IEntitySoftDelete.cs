@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Organizations.Data.Abstraction.CRUD.Base
 {
-    public interface IEntityDelete
+    public interface IEntitySoftDelete
     {
-        void DeleteById(string id);
+        void SoftDeleteById(string id);
     }
 }

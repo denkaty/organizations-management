@@ -18,7 +18,8 @@ namespace Organizations.Data.Models.SqlQueries
 
 		public const string Update = "UPDATE Industry SET Name = @Name WHERE Id = @Id";
 
-		public const string Delete = "DELETE FROM Industry WHERE Id = @Id";
+		public const string SoftDelete = "UPDATE Industry SET IsDeleted = 1 WHERE Id = @Id";
 
+		public const string Restore = "UPDATE Industry SET IsDeleted = 0 WHERE Id = @Id";
 	}
 }

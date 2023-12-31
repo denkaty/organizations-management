@@ -79,6 +79,13 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			DeleteOrganizationIndustryByCompositeKey(key1, key2);
 		}
 
+		public IEnumerable<OrganizationIndustry> GetAll(Func<OrganizationIndustry, bool> predicate)
+		{
+			IEnumerable<OrganizationIndustry> organizationsIndustries = GetAll().Where(predicate);
+
+			return organizationsIndustries;
+		}
+
 		private void InsertOrganizationIndustry(OrganizationIndustry entity)
 		{
 			try
@@ -339,7 +346,7 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 				{
 					using (SqlCommand command = connection.CreateCommand())
 					{
-						command.CommandText = OrganizationIndustryTableQueries.DeleteByOrganizationId;
+						command.CommandText = OrganizationIndustryTableQueries.DeleteByCompositeKey;
 						command.Parameters.AddWithValue("@Organization_Id", organization_Id);
 						command.Parameters.AddWithValue("@Industry_Id", industry_Id);
 						connection.Open();
@@ -353,6 +360,6 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			}
 		}
 
-
+		
 	}
 }

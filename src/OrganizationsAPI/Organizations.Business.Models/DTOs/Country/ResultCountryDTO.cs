@@ -11,5 +11,6 @@ namespace Organizations.Business.Models.DTOs.Country
 		public string Id { get; set; }
 
 		public string Name { get; set; }
+		public bool IsDeleted { get; set; }
 	}
 }

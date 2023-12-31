@@ -10,5 +10,6 @@ namespace Organizations.Business.Models.DTOs.Industry
 	{
 		public string Id { get; set; }
 		public string Name { get; set; }
+		public bool IsDeleted { get; set; }
 	}
 }

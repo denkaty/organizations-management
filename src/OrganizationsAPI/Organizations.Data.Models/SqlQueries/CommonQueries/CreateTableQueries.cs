@@ -12,6 +12,7 @@ namespace Organizations.Data.Models.SqlQueries.CommonQueries
 			@"CREATE TABLE [Country] (
 			[Id] NVARCHAR(36),
 			[Name] NVARCHAR(255),
+            [IsDeleted] BIT NOT NULL DEFAULT 0,
 			CONSTRAINT PK_Country_Id PRIMARY KEY ([Id]),
             CONSTRAINT UQ_Country_Name UNIQUE ([Name])
 			);";
@@ -20,7 +21,8 @@ namespace Organizations.Data.Models.SqlQueries.CommonQueries
 			@"CREATE TABLE [Industry] (
 			[Id] NVARCHAR(36),
 			[Name] NVARCHAR(255),
-			CONSTRAINT PK_Industry_Id PRIMARY KEY ([Id])
+            [IsDeleted] BIT NOT NULL DEFAULT 0,
+			CONSTRAINT PK_Industry_Id PRIMARY KEY ([Id]),
             CONSTRAINT UQ_Industry_Name UNIQUE ([Name])
 			);";
 
@@ -33,11 +35,12 @@ namespace Organizations.Data.Models.SqlQueries.CommonQueries
             [Description] NVARCHAR(255),
             [Founded_year] INT,
             [Employees] INT,
-            [Country_Id] NVARCHAR(36),
+            [Country_Id] NVARCHAR(36) NULL,
+            [IsDeleted] BIT NOT NULL DEFAULT 0,
             CONSTRAINT PK_Organization_Id PRIMARY KEY ([Id]),
+            CONSTRAINT FK_Organization_Country_Id_Country_Id FOREIGN KEY ([Country_Id]) REFERENCES Country([Id]),
             CONSTRAINT UQ_Organization_OrganizationId UNIQUE ([OrganizationId]),
             CONSTRAINT UQ_Organization_Name UNIQUE ([Name])
-            CONSTRAINT FK_Organization_Country_Id_Country_Id FOREIGN KEY ([Country_Id]) REFERENCES Country([Id])
             );";
 
         public const string OrganizationIndustry =

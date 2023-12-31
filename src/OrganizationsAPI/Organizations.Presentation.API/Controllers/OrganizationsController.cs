@@ -20,7 +20,10 @@ namespace Organizations.Presentation.API.Controllers
 			_organizationsService = organizationsService;
 		}
 
-		[HttpPost]
+		[HttpPost("CreateOrganization")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public IActionResult Create([FromBody] CreateOrganizationDTO createOrganizationDTO)
 		{
 			var apiResult = _organizationsService.Create(createOrganizationDTO);
@@ -28,7 +31,9 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
-		[HttpGet("id/{id}")]
+		[HttpGet("GetOrganizationById/{id}")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public IActionResult GetById([FromRoute] string id)
 		{
 			var apiResult = _organizationsService.GetById(id);
@@ -36,7 +41,9 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
-		[HttpGet("name/{name}")]
+		[HttpGet("GetOrganizationByName/{name}")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public IActionResult GetByName([FromRoute] string name)
 		{
 			var apiResult = _organizationsService.GetByName(name);
@@ -44,7 +51,8 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
-		[HttpGet]
+		[HttpGet("GetAllOrganizations")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
 		public IActionResult GetAll()
 		{
 			var apiResult = _organizationsService.GetAll();
@@ -53,8 +61,10 @@ namespace Organizations.Presentation.API.Controllers
 
 		}
 
-
-		[HttpPut("{id}")]
+		[HttpPut("UpdateOrganizationById/{id}")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public IActionResult Update([FromRoute] string id, [FromBody] UpdateOrganizationDTO updateOrganizationDTO)
 		{
 			var apiResult = _organizationsService.UpdateById(id, updateOrganizationDTO);
@@ -62,10 +72,45 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
-		[HttpDelete("{id}")]
-		public IActionResult Delete([FromRoute] string id)
+		[HttpPatch("UpdateOrganizationCountry/{id}")]
+		public IActionResult UpdateCountry([FromRoute] string id, PatchCountryDTO patchCountryDTO)
+		{
+			var apiResult = _organizationsService.UpdateCountry(id, patchCountryDTO);
+
+			return this.HandleResponse(apiResult);
+		}
+
+		[HttpPost("AddIndustryToOrganization/{id}")]
+		public IActionResult AddIndustry([FromRoute] string id, [FromBody] AddIndustryDTO addIndustryDTO)
+		{
+			var apiResult = _organizationsService.AddIndustry(id, addIndustryDTO);
+
+			return this.HandleResponse(apiResult);
+		}
+
+		[HttpDelete("{id}/RemoveIndustryFromOrganization/{name}")]
+		public IActionResult AddIndustry([FromRoute] string id, [FromRoute] string name)
+		{
+			var apiResult = _organizationsService.RemoveIndustry(id, name);
+
+			return this.HandleResponse(apiResult);
+		}
+
+		[HttpDelete("SoftDeleteOrganizationById/{id}")]
+		public IActionResult SoftDeleteById([FromRoute] string id)
 		{
 			var apiResult = _organizationsService.DeleteById(id);
+
+			return this.HandleResponse(apiResult);
+		}
+
+		[HttpPut("RestoreOrganizationById/{id}")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		public IActionResult RestoreById([FromRoute] string id)
+		{
+			var apiResult = _organizationsService.RestoreById(id);
 
 			return this.HandleResponse(apiResult);
 		}

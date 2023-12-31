@@ -17,6 +17,10 @@ namespace Organizations.Business.Abstraction.Services
 		public IAPIResult<ResultOrganizationDTO> GetByName(string name);
 		public IAPIResult<ICollection<ResultOrganizationDTO>> GetAll();
 		public IAPIResult<ResultOrganizationDTO> UpdateById(string id, UpdateOrganizationDTO updateOrganizationDTO);
+		public IAPIResult<ResultOrganizationDTO> UpdateCountry(string organizationId, PatchCountryDTO patchCountryDTO);
 		public IAPIResult<ResultOrganizationDTO> DeleteById(string id);
+		public IAPIResult<ResultOrganizationDTO> RestoreById(string id);
+		public IAPIResult<ResultOrganizationDTO> AddIndustry(string organizationId, AddIndustryDTO addIndustryDTO);
+		public IAPIResult<ResultOrganizationDTO> RemoveIndustry(string id, string name);
 	}
 }

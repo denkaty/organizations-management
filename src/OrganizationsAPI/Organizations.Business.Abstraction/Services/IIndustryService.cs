@@ -16,6 +16,7 @@ namespace Organizations.Business.Abstraction.Services
 		IAPIResult<ResultIndustryDTO> GetByName(string name);
 		IAPIResult<ICollection<ResultIndustryDTO>> GetAll();
 		IAPIResult<ResultIndustryDTO> UpdateById(string id, UpdateIndustryDTO updateIndustryDTO);
-		IAPIResult<ResultIndustryDTO> DeleteById(string id);
+		IAPIResult<ResultIndustryDTO> SoftDeleteById(string id);
+		IAPIResult<ResultIndustryDTO> RestoreById(string id); 
 	}
 }

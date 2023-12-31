@@ -12,5 +12,7 @@ namespace Organizations.Data.Abstraction.CRUD.BaseJunction
 		ICollection<T> GetByFirstKey(string key);
 		ICollection<T> GetBySecondKey(string key);
 		ICollection<T> GetAll();
+		IEnumerable<T> GetAll(Func<T, bool> predicate);
+
 	}
 }

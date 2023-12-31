@@ -1,110 +1,149 @@
 ﻿using AutoMapper;
 using Organizations.Business.Abstraction.Factories;
 using Organizations.Business.Abstraction.Services;
-using Organizations.Business.Models;
 using Organizations.Business.Models.DTOs.Country;
-using Organizations.Business.Models.DTOs.Organization;
+using Organizations.Business.Models.DTOs.Industry;
 using Organizations.Business.Models.Results.Base;
+using Organizations.Data.Abstraction.DatabaseContexts;
 using Organizations.Data.Abstraction.OrganizationsDatabase.Repositories;
 using Organizations.Data.Models.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace Organizations.Business.Services
 {
 	public class CountryService : ICountryService
 	{
-		private readonly IOrganizationsDatabaseCountryRepository _countryRepository;
+		private readonly IOrganizationsContext _organizationsContext;
 		private readonly IAPIResultFactory _apiResultFactory;
 		private readonly IMapper _mapper;
 
-		public CountryService(IOrganizationsDatabaseCountryRepository countryRepository,
+		public CountryService(IOrganizationsContext organizationsContext,
 							  IMapper mapper,
 							  IAPIResultFactory apiResultFactory)
 		{
-			_countryRepository = countryRepository;
+			_organizationsContext = organizationsContext;
 			_mapper = mapper;
 			_apiResultFactory = apiResultFactory;
 		}
+
 		public IAPIResult<ResultCountryDTO> Create(CreateCountryDTO createCountryDTO)
 		{
-			Country? existingCountry = _countryRepository.GetByName(createCountryDTO.Name);
-			ResultCountryDTO resultCountryDTO;
-			if (existingCountry == null)
-			{
-				Country createdCountry = _mapper.Map<Country>(createCountryDTO);
-				_countryRepository.Create(createdCountry);
+			Country? existingCountry = _organizationsContext.Countries.GetByName(createCountryDTO.Name);
 
-				resultCountryDTO = _mapper.Map<ResultCountryDTO>(createdCountry);
-				return _apiResultFactory.GetOKResult(resultCountryDTO);
+			if (existingCountry != null)
+			{
+				if (existingCountry.IsDeleted)
+				{
+					return _apiResultFactory.GetBadRequestResult<ResultCountryDTO>(
+						string.Format(Messages.ResourceIsSoftDeleted, "Country", createCountryDTO.Name));
+				}
+
+				return _apiResultFactory.GetBadRequestResult<ResultCountryDTO>(
+					string.Format(Messages.ResourceExists, "Country", createCountryDTO.Name));
 			}
 
-			resultCountryDTO = _mapper.Map<ResultCountryDTO>(existingCountry);
+			Country createdCountry = _mapper.Map<Country>(createCountryDTO);
+			_organizationsContext.Countries.Create(createdCountry);
+
+			ResultCountryDTO resultCountryDTO = _mapper.Map<ResultCountryDTO>(createdCountry);
 			return _apiResultFactory.GetOKResult(resultCountryDTO);
 		}
+
 		public IAPIResult<ResultCountryDTO> GetById(string id)
 		{
-			Country? existingCountry = _countryRepository.GetById(id);
-			if (existingCountry is null)
-			{
-				return _apiResultFactory.GetNotFoundResult<ResultCountryDTO>();
-			}
+			Country? existingCountry = _organizationsContext.Countries.GetById(id);
 
-			ResultCountryDTO resultCountryDTO = _mapper.Map<ResultCountryDTO>(existingCountry);
-			return _apiResultFactory.GetOKResult(resultCountryDTO);
+			return existingCountry == null
+				   ? _apiResultFactory.GetNotFoundResult<ResultCountryDTO>(string.Format(Messages.ResourceNotFound, "Country", id))
+				   : _apiResultFactory.GetOKResult(_mapper.Map<ResultCountryDTO>(existingCountry));
 		}
+
 		public IAPIResult<ResultCountryDTO> GetByName(string name)
 		{
-			Country? existingCountry = _countryRepository.GetByName(name);
-			if (existingCountry is null)
-			{
-				return _apiResultFactory.GetNotFoundResult<ResultCountryDTO>();
-			}
+			Country? existingCountry = _organizationsContext.Countries.GetByName(name);
 
-			ResultCountryDTO resultCountryDTO = _mapper.Map<ResultCountryDTO>(existingCountry);
-			return _apiResultFactory.GetOKResult(resultCountryDTO);
+			return existingCountry == null
+				? _apiResultFactory.GetNotFoundResult<ResultCountryDTO>(string.Format(Messages.ResourceNotFound, "Country", name))
+				: _apiResultFactory.GetOKResult(_mapper.Map<ResultCountryDTO>(existingCountry));
 		}
+
 		public IAPIResult<ICollection<ResultCountryDTO>> GetAll()
 		{
-			var existingCountries = _countryRepository.GetAll();
-
-			var resultCountryDTOs = _mapper.Map<ICollection<ResultCountryDTO>>(existingCountries);
+			ICollection<Country> existingCountries = _organizationsContext.Countries.GetAll();
+			ICollection<ResultCountryDTO> resultCountryDTOs = _mapper.Map<ICollection<ResultCountryDTO>>(existingCountries);
 
 			return _apiResultFactory.GetOKResult(resultCountryDTOs);
 		}
+
 		public IAPIResult<ResultCountryDTO> UpdateById(string id, UpdateCountryDTO updateCountryDTO)
 		{
-			Country? existingCountry = _countryRepository.GetById(id);
+			Country? existingCountry = _organizationsContext.Countries.GetById(id);
 
-			if (existingCountry is null)
+			if (existingCountry == null)
 			{
-				return _apiResultFactory.GetNotFoundResult<ResultCountryDTO>();
+				return _apiResultFactory.GetNotFoundResult<ResultCountryDTO>(string.Format(Messages.ResourceNotFound, "Country", id));
 			}
 
-			_mapper.Map(updateCountryDTO, existingCountry);
+			if (existingCountry.Name == existingCountry.Name)
+			{
+				return _apiResultFactory.GetBadRequestResult<ResultCountryDTO>(string.Format(Messages.ResourceNameSameAsBefore, "Country", existingCountry.Name));
+			}
 
-			_countryRepository.UpdateById(id, existingCountry);
+			bool providedNameIsAlreadyUsed = _organizationsContext
+									         .Countries
+											 .GetAll(country => country.Name == updateCountryDTO.Name)
+											 .Any();
+			if (providedNameIsAlreadyUsed)
+			{
+				return _apiResultFactory.GetBadRequestResult<ResultCountryDTO>(string.Format(Messages.ResourceNameAlreadyExists, "Country", updateCountryDTO.Name));
+			}
+
+			existingCountry = _mapper.Map(updateCountryDTO, existingCountry);
+			_organizationsContext.Countries.UpdateById(id, existingCountry);
 
 			return _apiResultFactory.GetNoContentResult<ResultCountryDTO>();
 		}
 
-		public IAPIResult<ResultCountryDTO> DeleteById(string id)
+		public IAPIResult<ResultCountryDTO> SoftDeleteById(string id)
 		{
-			var existingCountry = _countryRepository.GetById(id);
+			var existingCountry = _organizationsContext.Countries.GetById(id);
 
-			if (existingCountry is null)
+			if (existingCountry == null)
 			{
-				return _apiResultFactory.GetNotFoundResult<ResultCountryDTO>();
+				return _apiResultFactory.GetNotFoundResult<ResultCountryDTO>(string.Format(Messages.ResourceNotFound, "Country", id));
 			}
 
-			_countryRepository.DeleteById(id);
+			if (existingCountry.IsDeleted)
+			{
+				return _apiResultFactory.GetBadRequestResult<ResultCountryDTO>(string.Format(Messages.ResourceIsSoftDeleted, "Country", id));
+			}
+
+			_organizationsContext.Countries.SoftDeleteById(id);
+
+			IEnumerable<Organization> organizations = _organizationsContext.Organizations.GetAll(organization => organization.CountryId == id);
+			foreach (var organization in organizations)
+			{
+				_organizationsContext.Organizations.UpdateCountryToNull(organization.Id);
+			}
+
 			return _apiResultFactory.GetNoContentResult<ResultCountryDTO>();
 		}
 
+		public IAPIResult<ResultCountryDTO> RestoreById(string id)
+		{
+			var existingCountry = _organizationsContext.Countries.GetById(id);
+
+			if (existingCountry == null)
+			{
+				return _apiResultFactory.GetNotFoundResult<ResultCountryDTO>(string.Format(Messages.ResourceNotFound, "Country", id));
+			}
+
+			if (!existingCountry.IsDeleted)
+			{
+				return _apiResultFactory.GetBadRequestResult<ResultCountryDTO>(string.Format(Messages.ResourceIsNotSoftDeleted, "Country", id));
+			}
+
+			_organizationsContext.Countries.RestoreById(id);
+			return _apiResultFactory.GetNoContentResult<ResultCountryDTO>();
+		}
 	}
 }

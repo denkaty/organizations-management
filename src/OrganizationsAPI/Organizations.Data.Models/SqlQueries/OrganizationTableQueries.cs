@@ -26,6 +26,12 @@ namespace Organizations.Data.Models.SqlQueries
 															   Country_Id = @Country_Id
 														   WHERE Id = @Id";
 
-		public const string Delete = "DELETE FROM Organization WHERE Id = @Id";
+		public const string UpdateCountryIdToNull = @"UPDATE Organization SET Country_Id = NULL WHERE Id = @Id";
+
+		public const string UpdateCountryId = @"UPDATE Organization SET Country_Id = @UpdatedCountryId WHERE Id = @Id";
+
+		public const string SoftDelete = "UPDATE Organization SET IsDeleted = 1 WHERE Id = @Id";
+
+		public const string Restore = "UPDATE Organization SET IsDeleted = 0 WHERE Id = @Id";
 	}
 }

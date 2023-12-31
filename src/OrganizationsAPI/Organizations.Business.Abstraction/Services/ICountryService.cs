@@ -17,6 +17,8 @@ namespace Organizations.Business.Abstraction.Services
 		IAPIResult<ResultCountryDTO> GetByName(string name);
 		IAPIResult<ICollection<ResultCountryDTO>> GetAll();
 		IAPIResult<ResultCountryDTO> UpdateById(string id, UpdateCountryDTO updateCountryDTO);
-		IAPIResult<ResultCountryDTO> DeleteById(string id);
+		IAPIResult<ResultCountryDTO> SoftDeleteById(string id);
+		IAPIResult<ResultCountryDTO> RestoreById(string id);
+
 	}
 }

@@ -10,5 +10,7 @@ namespace Organizations.Data.Models.Entities
 	public class Industry : Entity
 	{
 		public string Name { get; set; }
+		public bool IsDeleted { get; set; }
+
 	}
 }

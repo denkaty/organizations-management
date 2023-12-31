@@ -49,7 +49,7 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			UpdateIndustry(id, entity);
 		}
 
-		public void DeleteById(string id)
+		public void SoftDeleteById(string id)
 		{
 			DeleteIndustry(id);
 		}
@@ -95,7 +95,8 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 								industry = new Industry
 								{
 									Id = Convert.ToString(dataReader["Id"]),
-									Name = Convert.ToString(dataReader["Name"])
+									Name = Convert.ToString(dataReader["Name"]),
+									IsDeleted = Convert.ToBoolean(dataReader["IsDeleted"])
 								};
 							}
 						}
@@ -128,7 +129,8 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 								industry = new Industry
 								{
 									Id = Convert.ToString(dataReader["Id"]),
-									Name = Convert.ToString(dataReader["Name"])
+									Name = Convert.ToString(dataReader["Name"]),
+									IsDeleted = Convert.ToBoolean(dataReader["IsDeleted"])
 								};
 							}
 						}
@@ -161,7 +163,8 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 								var industry = new Industry
 								{
 									Id = Convert.ToString(dataReader["Id"]),
-									Name = Convert.ToString(dataReader["Name"])
+									Name = Convert.ToString(dataReader["Name"]),
+									IsDeleted = Convert.ToBoolean(dataReader["IsDeleted"])
 								};
 								industries.Add(industry);
 							}
@@ -207,7 +210,27 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 				{
 					using (SqlCommand command = connection.CreateCommand())
 					{
-						command.CommandText = IndustryTableQueries.Delete;
+						command.CommandText = IndustryTableQueries.SoftDelete;
+						command.Parameters.AddWithValue("@Id", id);
+						connection.Open();
+						command.ExecuteNonQuery();
+					}
+				}
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
+		public void RestoreById(string id)
+		{
+			try
+			{
+				using (SqlConnection connection = new SqlConnection(_connectionString))
+				{
+					using (SqlCommand command = connection.CreateCommand())
+					{
+						command.CommandText = IndustryTableQueries.Restore;
 						command.Parameters.AddWithValue("@Id", id);
 						connection.Open();
 						command.ExecuteNonQuery();

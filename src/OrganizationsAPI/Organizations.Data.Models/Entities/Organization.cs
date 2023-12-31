@@ -21,6 +21,7 @@ namespace Organizations.Data.Models.Entities
 
 		public int Employees { get; set; }
 
-		public string CountryId { get; set; }
+		public string? CountryId { get; set; }
+		public bool IsDeleted { get; set; }
 	}
 }

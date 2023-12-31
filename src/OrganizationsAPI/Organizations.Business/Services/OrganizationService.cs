@@ -2,6 +2,7 @@
 using Organizations.Business.Abstraction.Factories;
 using Organizations.Business.Abstraction.Services;
 using Organizations.Business.Models.DTOs.Country;
+using Organizations.Business.Models.DTOs.Industry;
 using Organizations.Business.Models.DTOs.Organization;
 using Organizations.Business.Models.Results.Base;
 using Organizations.Data.Abstraction.DatabaseContexts;
@@ -33,96 +34,85 @@ namespace Organizations.Business.Services
 		public IAPIResult<ResultOrganizationDTO> Create(CreateOrganizationDTO createOrganizationDTO)
 		{
 			Organization? existingOrganization = _organizationsContext.Organizations.GetByName(createOrganizationDTO.Name);
+			if (existingOrganization != null)
+			{
+				if (existingOrganization.IsDeleted)
+				{
+					return _apiResultFactory.GetBadRequestResult<ResultOrganizationDTO>(
+						string.Format(Messages.ResourceIsSoftDeleted, "Organization", createOrganizationDTO.Name));
+				}
+
+				return _apiResultFactory.GetBadRequestResult<ResultOrganizationDTO>(
+					string.Format(Messages.ResourceExists, "Organization", createOrganizationDTO.Name));
+			}
+
+			Country? existingCountry = _organizationsContext.Countries.GetByName(createOrganizationDTO.Country);
+			if (existingCountry == null)
+			{
+				return _apiResultFactory.GetNotFoundResult<ResultOrganizationDTO>(string.Format(Messages.ResourceDoesNotExist, "Country", createOrganizationDTO.Country));
+			}
+
+			existingOrganization = _mapper.Map<Organization>(createOrganizationDTO);
+			existingOrganization.CountryId = existingCountry.Id;
+			_organizationsContext.Organizations.Create(existingOrganization);
+
 			var industryIds = new List<string>();
-			if (existingOrganization == null)
+			foreach (string industryName in createOrganizationDTO.Industries)
 			{
-				Country? existingCountry = _organizationsContext.Countries.GetByName(createOrganizationDTO.Country);
-				if (existingCountry == null)
+				Industry? existingIndustry = _organizationsContext.Industries.GetByName(industryName);
+				if (existingIndustry == null)
 				{
-					return _apiResultFactory.GetBadRequestResult<ResultOrganizationDTO>([string.Format(Messages.CountryDoesNotExist, createOrganizationDTO.Country)]);
+					return _apiResultFactory.GetBadRequestResult<ResultOrganizationDTO>(string.Format(Messages.ResourceDoesNotExist, "Industry", industryName));
 				}
-				else
+				OrganizationIndustry? existingOrganizationIndustry = _organizationsContext.OrganizationsIndustries.GetByCompositeKey(existingOrganization.Id, existingIndustry.Id);
+				if(existingOrganizationIndustry != null)
 				{
-					existingOrganization = _mapper.Map<Organization>(createOrganizationDTO);
-					existingOrganization.CountryId = existingCountry.Id;
+					return _apiResultFactory.GetBadRequestResult<ResultOrganizationDTO>(string.Format(Messages.JunctionResourceExists, "OrganizationIndustry", existingOrganizationIndustry.Organization_Id, existingOrganizationIndustry.Industry_Id));
 				}
-				_organizationsContext.Organizations.Create(existingOrganization);
-				foreach (string industryName in createOrganizationDTO.Industries)
+				OrganizationIndustry organizationIndustry = new OrganizationIndustry
 				{
-					Industry? existingIndustry = _organizationsContext.Industries.GetByName(industryName);
-					if (existingIndustry == null)
-					{
-						return _apiResultFactory.GetBadRequestResult<ResultOrganizationDTO>([string.Format(Messages.CountryDoesNotExist, industryName)]);
-					}
-					else
-					{
-						OrganizationIndustry organizationIndustry = new OrganizationIndustry
-						{
-							Organization_Id = existingOrganization.Id,
-							Industry_Id = existingIndustry.Id
-						};
-						industryIds.Add(organizationIndustry.Industry_Id);
-						_organizationsContext.OrganizationsIndustries.Create(organizationIndustry);
-					}
-				}
-
-				ResultOrganizationDTO resultOrganizationDTO = _mapper.Map<ResultOrganizationDTO>(existingOrganization);
-				resultOrganizationDTO.Industries = industryIds;
-				return _apiResultFactory.GetOKResult(resultOrganizationDTO);
-			}
-			else
-			{
-				return _apiResultFactory.GetBadRequestResult<ResultOrganizationDTO>([string.Format(Messages.OrganizationExists, createOrganizationDTO.Name)]);
+					Organization_Id = existingOrganization.Id,
+					Industry_Id = existingIndustry.Id
+				};
+				_organizationsContext.OrganizationsIndustries.Create(organizationIndustry);
+				industryIds.Add(organizationIndustry.Industry_Id);
 			}
 
+			ResultOrganizationDTO resultOrganizationDTO = _mapper.Map<ResultOrganizationDTO>(existingOrganization);
+			resultOrganizationDTO.Industries = industryIds;
+			return _apiResultFactory.GetOKResult(resultOrganizationDTO);
 		}
 
 		public IAPIResult<ResultOrganizationDTO> GetById(string id)
 		{
 			Organization? existingOrganization = _organizationsContext.Organizations.GetById(id);
 
-			if (existingOrganization != null)
+			if (existingOrganization == null)
 			{
-				Country existingCountry = _organizationsContext.Countries.GetById(existingOrganization.CountryId);
-
-				ICollection<string> industryIds = _organizationsContext.OrganizationsIndustries
-																.GetByFirstKey(existingOrganization.Id)
-																.Select(organization => organization.Industry_Id)
-																.ToList();
-
-				ResultOrganizationDTO resultOrganizationDTO = _mapper.Map<ResultOrganizationDTO>(existingOrganization);
-				resultOrganizationDTO.Industries = industryIds;
-
-				return _apiResultFactory.GetOKResult(resultOrganizationDTO);
+				return _apiResultFactory.GetNotFoundResult<ResultOrganizationDTO>(string.Format(Messages.ResourceNotFound, "Organization", id));
 			}
-			else
-			{
-				return _apiResultFactory.GetNotFoundResult<ResultOrganizationDTO>([string.Format(Messages.OrganizationNotFound, id)]);
-			}
+
+			ICollection<string> industryIds = FetchIndustryIdsByOrganizationId(existingOrganization.Id);
+			ResultOrganizationDTO resultOrganizationDTO = _mapper.Map<ResultOrganizationDTO>(existingOrganization);
+			resultOrganizationDTO.Industries = industryIds;
+
+			return _apiResultFactory.GetOKResult(resultOrganizationDTO);
 		}
 
 		public IAPIResult<ResultOrganizationDTO> GetByName(string name)
 		{
 			Organization? existingOrganization = _organizationsContext.Organizations.GetByName(name);
 
-			if (existingOrganization != null)
+			if (existingOrganization == null)
 			{
-				Country existingCountry = _organizationsContext.Countries.GetByName(existingOrganization.CountryId)!;
-
-				ICollection<string> industryIds = _organizationsContext.OrganizationsIndustries
-																.GetByFirstKey(existingOrganization.Id)
-																.Select(organization => organization.Industry_Id)
-																.ToList();
-
-				ResultOrganizationDTO resultOrganizationDTO = _mapper.Map<ResultOrganizationDTO>(existingOrganization);
-				resultOrganizationDTO.Industries = industryIds;
-
-				return _apiResultFactory.GetOKResult(resultOrganizationDTO);
+				return _apiResultFactory.GetNotFoundResult<ResultOrganizationDTO>(string.Format(Messages.ResourceNotFound, "Organization", name));
 			}
-			else
-			{
-				return _apiResultFactory.GetNotFoundResult<ResultOrganizationDTO>([string.Format(Messages.OrganizationNotFound, name)]);
-			}
+
+			ICollection<string> industryIds = FetchIndustryIdsByOrganizationId(existingOrganization.Id);
+			ResultOrganizationDTO resultOrganizationDTO = _mapper.Map<ResultOrganizationDTO>(existingOrganization);
+			resultOrganizationDTO.Industries = industryIds;
+
+			return _apiResultFactory.GetOKResult(resultOrganizationDTO);
 		}
 
 		public IAPIResult<ICollection<ResultOrganizationDTO>> GetAll()
@@ -133,10 +123,7 @@ namespace Organizations.Business.Services
 			{
 				Country existingCountry = _organizationsContext.Countries.GetByName(existingOrganization.CountryId)!;
 
-				ICollection<string> industryIds = _organizationsContext.OrganizationsIndustries
-																.GetByFirstKey(existingOrganization.Id)
-																.Select(organization => organization.Industry_Id)
-																.ToList();
+				ICollection<string> industryIds = FetchIndustryIdsByOrganizationId(existingOrganization.Id);
 
 				ResultOrganizationDTO resultOrganizationDTO = _mapper.Map<ResultOrganizationDTO>(existingOrganization);
 				resultOrganizationDTO.Industries = industryIds;
@@ -149,13 +136,184 @@ namespace Organizations.Business.Services
 
 		public IAPIResult<ResultOrganizationDTO> UpdateById(string id, UpdateOrganizationDTO updateOrganizationDTO)
 		{
-			throw new NotImplementedException();
+			Organization? existingOrganization = _organizationsContext.Organizations.GetById(id);
+			if (existingOrganization == null)
+			{
+				return _apiResultFactory.GetNotFoundResult<ResultOrganizationDTO>(
+					string.Format(Messages.ResourceNotFound, "Organization", updateOrganizationDTO.Name));
+			}
+
+			if (existingOrganization.IsDeleted)
+			{
+				return _apiResultFactory.GetBadRequestResult<ResultOrganizationDTO>(
+					string.Format(Messages.ResourceIsSoftDeleted, "Organization", updateOrganizationDTO.Name));
+			}
+
+			Country? existingCountry = _organizationsContext.Countries.GetByName(updateOrganizationDTO.Country);
+			if (existingCountry == null)
+			{
+				return _apiResultFactory.GetNotFoundResult<ResultOrganizationDTO>(string.Format(Messages.ResourceDoesNotExist, "Country", updateOrganizationDTO.Country));
+			}
+
+			List<string> industryIds = new List<string>();
+			foreach (var industryName in updateOrganizationDTO.Industries)
+			{
+				Industry? existingIndustry = _organizationsContext.Industries.GetByName(industryName);
+				if (existingIndustry == null)
+				{
+					return _apiResultFactory.GetNotFoundResult<ResultOrganizationDTO>(string.Format(Messages.ResourceDoesNotExist, "Industry", industryName));
+				}
+
+				OrganizationIndustry? existingOrganizationIndustry = _organizationsContext.OrganizationsIndustries.GetByCompositeKey(id, existingIndustry.Id);
+				if(existingOrganizationIndustry != null)
+				{
+					continue;
+				}
+
+				OrganizationIndustry organizationIndustry = new OrganizationIndustry
+				{
+					Organization_Id = existingOrganization.Id,
+					Industry_Id = existingIndustry.Id
+				};
+				_organizationsContext.OrganizationsIndustries.Create(organizationIndustry);
+				industryIds.Add(organizationIndustry.Industry_Id);
+			}
+
+			existingOrganization = _mapper.Map<Organization>(updateOrganizationDTO);
+			existingOrganization.CountryId = existingCountry.Id;
+			existingOrganization.Id = id;
+			_organizationsContext.Organizations.UpdateById(id, existingOrganization);
+
+			return _apiResultFactory.GetNoContentResult<ResultOrganizationDTO>();
+		}
+
+		public IAPIResult<ResultOrganizationDTO> UpdateCountry(string organizationId, PatchCountryDTO patchCountryDTO)
+		{
+			Organization? existingOrganization = _organizationsContext.Organizations.GetById(organizationId);
+
+			if (existingOrganization == null)
+			{
+				return _apiResultFactory.GetNotFoundResult<ResultOrganizationDTO>(string.Format(Messages.ResourceNotFound, "Organization", organizationId));
+			}
+
+			if(patchCountryDTO.CountryName == null)
+			{
+				existingOrganization.OrganizationId = null;
+				_organizationsContext.Organizations.UpdateCountryToNull(organizationId);
+			}
+
+			Country? existingCountry = _organizationsContext.Countries.GetByName(patchCountryDTO.CountryName);
+			if(existingCountry == null)
+			{
+				return _apiResultFactory.GetBadRequestResult<ResultOrganizationDTO>(string.Format(Messages.ResourceDoesNotExist, "Country", patchCountryDTO.CountryName));
+			}
+
+			if (existingOrganization.CountryId == existingCountry.Id) {
+				return _apiResultFactory.GetBadRequestResult<ResultOrganizationDTO>(string.Format(Messages.ResourceNameSameAsBefore, "Country", existingCountry.Name));
+			}
+
+			existingOrganization.CountryId = existingCountry.Id;
+			_organizationsContext.Organizations.UpdateCountry(organizationId, existingCountry.Id);
+
+			ResultOrganizationDTO resultOrganizationDTO = _mapper.Map<ResultOrganizationDTO>(existingOrganization);
+			resultOrganizationDTO.Industries = FetchIndustryIdsByOrganizationId(organizationId);
+			return _apiResultFactory.GetOKResult(resultOrganizationDTO);
 		}
 
 		public IAPIResult<ResultOrganizationDTO> DeleteById(string id)
 		{
-			throw new NotImplementedException();
+			Organization? existingOrganization = _organizationsContext.Organizations.GetById(id);
+
+			if (existingOrganization == null)
+			{
+				return _apiResultFactory.GetNotFoundResult<ResultOrganizationDTO>(string.Format(Messages.ResourceNotFound, "Organization", id));
+			}
+
+			if (existingOrganization.IsDeleted)
+			{
+				return _apiResultFactory.GetBadRequestResult<ResultOrganizationDTO>(string.Format(Messages.ResourceIsSoftDeleted, "Organization", id));
+			}
+
+			_organizationsContext.Organizations.SoftDeleteById(id);
+			return _apiResultFactory.GetNoContentResult<ResultOrganizationDTO>();
+		}
+		public IAPIResult<ResultOrganizationDTO> RestoreById(string id)
+		{
+			Organization? existingOrganization = _organizationsContext.Organizations.GetById(id);
+
+			if (existingOrganization == null)
+			{
+				return _apiResultFactory.GetNotFoundResult<ResultOrganizationDTO>(string.Format(Messages.ResourceNotFound, "Organization", id));
+			}
+
+			if (!existingOrganization.IsDeleted)
+			{
+				return _apiResultFactory.GetBadRequestResult<ResultOrganizationDTO>(string.Format(Messages.ResourceIsNotSoftDeleted, "Organization", id));
+			}
+
+			_organizationsContext.Organizations.RestoreById(id);
+			return _apiResultFactory.GetNoContentResult<ResultOrganizationDTO>();
 		}
 
+		private ICollection<string> FetchIndustryIdsByOrganizationId(string organizationId)
+		{
+			return _organizationsContext.OrganizationsIndustries
+					   .GetByFirstKey(organizationId)
+					   .Select(organization => organization.Industry_Id)
+					   .ToList();
+		}
+
+		public IAPIResult<ResultOrganizationDTO> AddIndustry(string organizationId, AddIndustryDTO addIndustryDTO)
+		{
+			Organization? existingOrganization = _organizationsContext.Organizations.GetById(organizationId);
+			if(existingOrganization == null)
+			{
+				return _apiResultFactory.GetNotFoundResult<ResultOrganizationDTO>(string.Format(Messages.ResourceNotFound, "Organization", organizationId));
+			}
+
+			Industry? existingIndustry = _organizationsContext.Industries.GetByName(addIndustryDTO.Name);
+			if(existingIndustry == null)
+			{
+				return _apiResultFactory.GetNotFoundResult<ResultOrganizationDTO>(string.Format(Messages.ResourceNotFound, "Industry", addIndustryDTO.Name));
+			}
+
+			OrganizationIndustry existingOrganizationIndustry = _organizationsContext.OrganizationsIndustries.GetByCompositeKey(organizationId, existingIndustry.Id);
+			if( existingOrganizationIndustry != null) {
+				_apiResultFactory.GetBadRequestResult<ResultOrganizationDTO>(string.Format(Messages.JunctionResourceExists,"OrganizationIndustry", organizationId, existingIndustry.Id));
+			}
+
+			OrganizationIndustry organizationIndustry = new OrganizationIndustry
+			{
+				Organization_Id = organizationId,
+				Industry_Id = existingIndustry.Id
+			};
+
+			_organizationsContext.OrganizationsIndustries.Create(organizationIndustry);
+			return _apiResultFactory.GetNoContentResult<ResultOrganizationDTO>();
+		}
+
+		public IAPIResult<ResultOrganizationDTO> RemoveIndustry(string id, string name)
+		{
+			Organization? existingOrganization = _organizationsContext.Organizations.GetById(id);
+			if (existingOrganization == null)
+			{
+				return _apiResultFactory.GetNotFoundResult<ResultOrganizationDTO>(string.Format(Messages.ResourceNotFound, "Organization", id));
+			}
+
+			Industry? existingIndustry = _organizationsContext.Industries.GetByName(name);
+			if (existingIndustry == null)
+			{
+				return _apiResultFactory.GetNotFoundResult<ResultOrganizationDTO>(string.Format(Messages.ResourceNotFound, "Industry", name));
+			}
+
+			OrganizationIndustry? existingOrganizationIndustry = _organizationsContext.OrganizationsIndustries.GetByCompositeKey(id, existingIndustry.Id);
+			if (existingOrganizationIndustry == null)
+			{
+				return _apiResultFactory.GetBadRequestResult<ResultOrganizationDTO>(string.Format(Messages.JunctionResourceDoesNotExists, "OrganizationIndustry", id, existingIndustry.Id));
+			}
+
+			_organizationsContext.OrganizationsIndustries.DeleteByCompositeKey(id, existingIndustry.Id);
+			return _apiResultFactory.GetNoContentResult<ResultOrganizationDTO>();
+		}
 	}
 }
