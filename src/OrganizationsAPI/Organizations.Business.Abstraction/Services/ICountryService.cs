@@ -1,12 +1,5 @@
-﻿using Organizations.Business.Models;
-using Organizations.Business.Models.DTOs.Country;
-using Organizations.Business.Models.DTOs.Organization;
+﻿using Organizations.Business.Models.DTOs.Country;
 using Organizations.Business.Models.Results.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Organizations.Business.Abstraction.Services
 {

@@ -9,10 +9,13 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\DataImportingLibrary\DataImporting.Abstraction\DataImporting.Abstraction.csproj" />
+    <ProjectReference Include="..\..\DataImportingLibrary\DataImporting\DataImporting.csproj" />
     <ProjectReference Include="..\Organizations.Business.Abstraction\Organizations.Business.Abstraction.csproj" />
     <ProjectReference Include="..\Organizations.Business.Models\Organizations.Business.Models.csproj" />
     <ProjectReference Include="..\Organizations.Business\Organizations.Business.csproj" />

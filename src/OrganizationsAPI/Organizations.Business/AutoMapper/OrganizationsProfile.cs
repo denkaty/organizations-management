@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DataImporting.Models;
 using Organizations.Business.Models.DTOs.Country;
 using Organizations.Business.Models.DTOs.Industry;
 using Organizations.Business.Models.DTOs.Organization;
@@ -34,6 +35,13 @@ namespace Organizations.Business.AutoMapper
 			   .ForMember(dest => dest.Employees, opt => opt.MapFrom(src => src.Employees));
 			CreateMap<Organization, ResultOrganizationDTO>().ReverseMap();
 			CreateMap<UpdateOrganizationDTO, Organization>().ReverseMap();
+
+			CreateMap<NormalizedOrganization, Organization>()
+				.ForMember(dest => dest.Id, opt => opt.Ignore())
+				.ForMember(dest => dest.CountryId, opt => opt.Ignore());
+
+			CreateMap<NormalizedOrganization, Country>()
+				.ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
 		}
 	}
 }
