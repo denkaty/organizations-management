@@ -18,7 +18,8 @@ namespace Organizations.Presentation.API.Controllers
 			_industryService = industryService;
 		}
 
-		[HttpPost("CreateIndustry")]
+		[HttpPost]
+		[Route("CreateIndustry")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		public IActionResult Create([FromBody] CreateIndustryDTO createIndustryDTO)
@@ -28,7 +29,8 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
-		[HttpGet("GetIndustryById/{id}")]
+		[HttpGet]
+		[Route("GetIndustryById/{id}")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public IActionResult GetById([FromRoute] string id)
@@ -38,7 +40,8 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
-		[HttpGet("GetIndustryByName/{name}")]
+		[HttpGet]
+		[Route("GetIndustryByName/{name}")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public IActionResult GetByName([FromRoute] string name)
@@ -48,7 +51,8 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
-		[HttpGet("GetAllIndustries")]
+		[HttpGet]
+		[Route("GetAllIndustries")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		public IActionResult GetAll()
 		{
@@ -58,7 +62,8 @@ namespace Organizations.Presentation.API.Controllers
 
 		}
 
-		[HttpPut("UpdateIndustryById/{id}")]
+		[HttpPut]
+		[Route("UpdateIndustryById/{id}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -69,7 +74,8 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
-		[HttpDelete("SoftDeleteIndustryById/{id}")]
+		[HttpDelete]
+		[Route("SoftDeleteIndustryById/{id}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -80,7 +86,8 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
-		[HttpPut("RestoreCountryById/{id}")]
+		[HttpPut]
+		[Route("RestoreCountryById/{id}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
