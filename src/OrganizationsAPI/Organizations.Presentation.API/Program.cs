@@ -34,11 +34,13 @@ builder.Services.AddTransient<IOrganizationsDatabaseCountryRepository, Organizat
 builder.Services.AddTransient<IOrganizationsDatabaseIndustryRepository, OrganizationsDatabaseIndustryRepository>();
 builder.Services.AddTransient<IOrganizationsDatabaseOrganizationRepository, OrganizationsDatabaseOrganizationRepository>();
 builder.Services.AddTransient<IOrganizationsDatabaseOrganizationIndustryRepository, OrganizationsDatabaseOrganizationIndustryRepository>();
+builder.Services.AddTransient<IOrganizationsDatabaseStatisticRepository, OrganizationsDatabaseStatisticRepository>();
 builder.Services.AddTransient<IAPIResultFactory, APIResultFactory>();
 builder.Services.AddTransient<IOrganizationsContext, OrganizationsContext>();
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<IOrganizationService, OrganizationService>();
 builder.Services.AddScoped<IIndustryService, IndustryService>();
+builder.Services.AddScoped<IStatisticService, StatisticService>();
 
 builder.Services.AddTransient<IIndustriesNormalizer, IndustriesNormalizer>();
 builder.Services.AddTransient<IOrganizationDataNormalizer, OrganizationDataNormalizer>();

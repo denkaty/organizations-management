@@ -14,12 +14,14 @@ namespace Organizations.Data.DatabaseContexts
 		public OrganizationsContext(IOrganizationsDatabaseCountryRepository countries,
 									IOrganizationsDatabaseIndustryRepository industries,
 									IOrganizationsDatabaseOrganizationRepository organizations,
-									IOrganizationsDatabaseOrganizationIndustryRepository organizationsIndustries)
+									IOrganizationsDatabaseOrganizationIndustryRepository organizationsIndustries,
+									IOrganizationsDatabaseStatisticRepository statistics)
 		{
 			Countries = countries;
 			Industries = industries;
 			Organizations = organizations;
 			OrganizationsIndustries = organizationsIndustries;
+			Statistics = statistics;
 		}
 
 		public IOrganizationsDatabaseCountryRepository Countries { get; }
@@ -30,5 +32,6 @@ namespace Organizations.Data.DatabaseContexts
 
 		public IOrganizationsDatabaseOrganizationIndustryRepository OrganizationsIndustries { get; }
 
+		public IOrganizationsDatabaseStatisticRepository Statistics { get; }
 	}
 }

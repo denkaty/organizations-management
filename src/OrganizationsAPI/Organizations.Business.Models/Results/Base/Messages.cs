@@ -23,11 +23,5 @@ namespace Organizations.Business.Models.Results.Base
 		public const string JunctionResourceExists = "Invalid request - {0} primary key '{1}' and '{2}' already exists.";
 		public const string JunctionResourceDoesNotExists = "Invalid request - {0} primary key '{1}' and '{2}' does not exist.";
 
-
-		public static string CountryIsSoftDeleted = "Invalid request - Country '{0}' is already soft deleted.";
-		public static string IndustryDoesNotExist = "Invalid request - Industry '{0}' does not exist.";
-		public static string OrganizationExists = "Invalid request - Organization '{0}' already exists.";
-		public static string OrganizationNotFound = "Invalid request - Organization '{0}' not found.";
-
 	}
 }
