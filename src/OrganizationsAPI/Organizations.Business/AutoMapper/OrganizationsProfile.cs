@@ -3,6 +3,7 @@ using DataImporting.Models;
 using Organizations.Business.Models.DTOs.Country;
 using Organizations.Business.Models.DTOs.Industry;
 using Organizations.Business.Models.DTOs.Organization;
+using Organizations.Business.Models.DTOs.Statistic;
 using Organizations.Data.Models.Entities;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,14 @@ namespace Organizations.Business.AutoMapper
 
 			CreateMap<NormalizedOrganization, Country>()
 				.ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
+
+			CreateMap<StatisticOrganization, StatisticOrganizationDTO>();
+
+			CreateMap<StatisticEmployeesCountByIndustry, StatisticEmployeesCountByIndustryDTO>();
+
+			CreateMap<StatisticEmployeesCountByCountryAndIndustry, StatisticEmployeesCountByCountryAndIndustryDTO>();
+
+
 		}
 	}
 }
