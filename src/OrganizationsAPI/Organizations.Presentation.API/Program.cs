@@ -15,14 +15,17 @@ using Organizations.Data.Models.Options;
 using Organizations.Data.OrganizationsDatabase.Configuraters;
 using Organizations.Data.OrganizationsDatabase.Repositories;
 using Organizations.Presentation.API.BackgroundServices;
+using Organizations.Presentation.API.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var organizationsDatabaseOptions = builder.Configuration.GetSection(nameof(OrganizationsDatabaseOptions));
 var dataOptions = builder.Configuration.GetSection(nameof(DataOptions));
+var allowedHostsOptions = builder.Configuration.GetSection(nameof(HostsOptions));
 
 builder.Services.Configure<OrganizationsDatabaseOptions>(organizationsDatabaseOptions);
 builder.Services.Configure<DataOptions>(dataOptions);
+builder.Services.Configure<HostsOptions>(allowedHostsOptions);
 
 builder.Services.AddAutoMapper(typeof(OrganizationsProfile));
 builder.Services.AddTransient<IOrganizationsDatabaseConnectionValidator, OrganizationsDatabaseConnectionValidator>();
@@ -65,6 +68,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<IPFilteringMiddleware>();
 
 app.UseAuthorization();
 

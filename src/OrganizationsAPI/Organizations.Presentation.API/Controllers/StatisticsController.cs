@@ -17,7 +17,7 @@ namespace Organizations.Presentation.API.Controllers
 		}
 
 		[HttpGet]
-		[Route("Companies/SortedByEmployeeCount")]
+		[Route("Organizations/SortedByEmployeeCount")]
 		public IActionResult GetOrganizationsSortedByEmployeeCount()
 		{
 			var apiResult = _statisticService.GetOrganizationsSortedByEmployeeCount();
