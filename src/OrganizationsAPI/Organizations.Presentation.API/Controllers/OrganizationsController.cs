@@ -124,6 +124,12 @@ namespace Organizations.Presentation.API.Controllers
 
 			return this.HandleResponse(apiResult);
 		}
+		[HttpGet]
+		public IActionResult GetByIdReplacingForeignKeys(string id)
+		{
+			var apiResult = _organizationsService.GetByIdReplacingForeignKeys(id);
 
+			return this.HandleResponse(apiResult);
+		}
 	}
 }

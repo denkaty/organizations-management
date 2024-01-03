@@ -15,7 +15,7 @@ namespace Organizations.Business.Models.DTOs.Organization
 		public string Description { get; set; }
 		public int Founded { get; set; }
 		public int Employees { get; set; }
-		public string CountryId { get; set; }
+		public string Country { get; set; }
 		public ICollection<string> Industries { get; set; }
 		public bool IsDeleted { get;set; }
 	}

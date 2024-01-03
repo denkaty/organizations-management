@@ -13,7 +13,8 @@ namespace Organizations.Business.Abstraction.Services
     public interface IOrganizationService
 	{
 		public IAPIResult<ResultOrganizationDTO> Create(CreateOrganizationDTO createOrganizationDTO);
-		public IAPIResult<ResultOrganizationDTO> GetById(string id);
+		public IAPIResult<ResultOrganizationDTO> GetById(string id); 
+		public IAPIResult<ResultOrganizationDTO> GetByIdReplacingForeignKeys(string id);
 		public IAPIResult<ResultOrganizationDTO> GetByName(string name);
 		public IAPIResult<ICollection<ResultOrganizationDTO>> GetAll();
 		public IAPIResult<ResultOrganizationDTO> UpdateById(string id, UpdateOrganizationDTO updateOrganizationDTO);

@@ -1,6 +1,7 @@
-using CsvHelper;
 using DataImporting.Abstraction.Services;
 using DataImporting.Services;
+using DinkToPdf.Contracts;
+using DinkToPdf;
 using Organizations.Business.Abstraction.Factories;
 using Organizations.Business.Abstraction.Services;
 using Organizations.Business.AutoMapper;
@@ -44,7 +45,6 @@ builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<IOrganizationService, OrganizationService>();
 builder.Services.AddScoped<IIndustryService, IndustryService>();
 builder.Services.AddScoped<IStatisticService, StatisticService>();
-
 builder.Services.AddTransient<IIndustriesNormalizer, IndustriesNormalizer>();
 builder.Services.AddTransient<IOrganizationDataNormalizer, OrganizationDataNormalizer>();
 builder.Services.AddTransient<ICSVReader, CSVReader>();
@@ -53,6 +53,10 @@ builder.Services.AddTransient<IFileNameGenerator,FileNameGenerator>();
 builder.Services.AddTransient<IOrganizationsDataFileHandler, OrganizationsDataFileHandler>();
 builder.Services.AddTransient<IDataImportingManager, DataImportingManager>();
 builder.Services.AddHostedService<RecurringDataImportingHostedService>();
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+builder.Services.AddScoped<IOrganizationHTMLGenerator, OrganizationHTMLGenerator>();
+builder.Services.AddScoped<IPDFGenerator, PDFGenerator>();
+builder.Services.AddScoped<IDataExportManager, DataExportManager>();
 
 builder.Services.AddControllers();
 

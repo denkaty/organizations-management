@@ -34,7 +34,11 @@ namespace Organizations.Business.AutoMapper
 			   .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
 			   .ForMember(dest => dest.Founded, opt => opt.MapFrom(src => src.Founded))
 			   .ForMember(dest => dest.Employees, opt => opt.MapFrom(src => src.Employees));
-			CreateMap<Organization, ResultOrganizationDTO>().ReverseMap();
+
+			CreateMap<Organization, ResultOrganizationDTO>()
+			   .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.CountryId))
+			   .ReverseMap();
+
 			CreateMap<UpdateOrganizationDTO, Organization>().ReverseMap();
 
 			CreateMap<NormalizedOrganization, Organization>()

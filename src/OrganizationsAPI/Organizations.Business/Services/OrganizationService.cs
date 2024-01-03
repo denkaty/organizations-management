@@ -98,6 +98,30 @@ namespace Organizations.Business.Services
 
 			return _apiResultFactory.GetOKResult(resultOrganizationDTO);
 		}
+		public IAPIResult<ResultOrganizationDTO> GetByIdReplacingForeignKeys(string id)
+		{
+			Organization? existingOrganization = _organizationsContext.Organizations.GetById(id);
+
+			if (existingOrganization == null)
+			{
+				return _apiResultFactory.GetNotFoundResult<ResultOrganizationDTO>(string.Format(Messages.ResourceNotFound, "Organization", id));
+			}
+			ResultOrganizationDTO resultOrganizationDTO = _mapper.Map<ResultOrganizationDTO>(existingOrganization);
+
+			Country country = _organizationsContext.Countries.GetById(existingOrganization.CountryId);
+			resultOrganizationDTO.Country = country.Name;
+
+			ICollection<string> industryIDs = FetchIndustryIdsByOrganizationId(existingOrganization.Id);
+			ICollection<string> industryNames = new List<string>();
+			foreach (var industryID in industryIDs)
+			{
+				Industry industry = _organizationsContext.Industries.GetById(industryID);
+				industryNames.Add(industry.Name);
+			}
+			resultOrganizationDTO.Industries = industryNames;
+
+			return _apiResultFactory.GetOKResult(resultOrganizationDTO);
+		}
 
 		public IAPIResult<ResultOrganizationDTO> GetByName(string name)
 		{
@@ -255,14 +279,6 @@ namespace Organizations.Business.Services
 			return _apiResultFactory.GetNoContentResult<ResultOrganizationDTO>();
 		}
 
-		private ICollection<string> FetchIndustryIdsByOrganizationId(string organizationId)
-		{
-			return _organizationsContext.OrganizationsIndustries
-					   .GetByFirstKey(organizationId)
-					   .Select(organization => organization.Industry_Id)
-					   .ToList();
-		}
-
 		public IAPIResult<ResultOrganizationDTO> AddIndustry(string organizationId, AddIndustryDTO addIndustryDTO)
 		{
 			Organization? existingOrganization = _organizationsContext.Organizations.GetById(organizationId);
@@ -315,5 +331,15 @@ namespace Organizations.Business.Services
 			_organizationsContext.OrganizationsIndustries.DeleteByCompositeKey(id, existingIndustry.Id);
 			return _apiResultFactory.GetNoContentResult<ResultOrganizationDTO>();
 		}
+
+		private ICollection<string> FetchIndustryIdsByOrganizationId(string organizationId)
+		{
+			return _organizationsContext.OrganizationsIndustries
+					   .GetByFirstKey(organizationId)
+					   .Select(organization => organization.Industry_Id)
+					   .ToList();
+		}
+
+
 	}
 }
