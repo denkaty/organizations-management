@@ -44,6 +44,17 @@ namespace Organizations.Presentation.API.Controllers
 		}
 
 		[HttpGet]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[Route("GetOrganizationByIdReplacingForeignKeys/{id}")]
+		public IActionResult GetOrganizationByIdReplacingForeignKeys(string id)
+		{
+			var apiResult = _organizationsService.GetByIdReplacingForeignKeys(id);
+
+			return this.HandleResponse(apiResult);
+		}
+
+		[HttpGet]
 		[Route("GetOrganizationByName/{name}")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -124,12 +135,6 @@ namespace Organizations.Presentation.API.Controllers
 
 			return this.HandleResponse(apiResult);
 		}
-		[HttpGet]
-		public IActionResult GetByIdReplacingForeignKeys(string id)
-		{
-			var apiResult = _organizationsService.GetByIdReplacingForeignKeys(id);
-
-			return this.HandleResponse(apiResult);
-		}
+		
 	}
 }

@@ -8,11 +8,11 @@ namespace Organizations.Presentation.API.Controllers
 {
 	[ApiController]
 	[Route("api/[controller]")]
-	public class ExportController : ControllerBase
+	public class ExportsController : ControllerBase
 	{
 		private readonly IDataExportManager _exportService;
 
-		public ExportController(IDataExportManager exportService)
+		public ExportsController(IDataExportManager exportService)
 		{
 			_exportService = exportService;
 		}

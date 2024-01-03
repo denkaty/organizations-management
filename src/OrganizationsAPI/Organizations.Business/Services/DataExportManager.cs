@@ -42,7 +42,7 @@ namespace Organizations.Business.Services
 			var htmlContent = _organizationHTMLGenerator.GenerateHtml(organization);
 			var pdfBytes = _pdfGenerator.GeneratePdf(htmlContent);
 
-			return new ResultOrganizationPDF { PdfContent = pdfBytes, FileName = $"{organization.Name}_Report.pdf"};
+			return new ResultOrganizationPDF { PdfContent = pdfBytes, FileName = $"{organization.Name}.pdf"};
 		}
 	}
 }
