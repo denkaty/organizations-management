@@ -16,12 +16,12 @@ namespace DataImporting.Services
 		}
 		public string GenerateJsonDataFile()
 		{
-			string fileName = "Data";
 			string timestamp = GenerateTimestamp();
 			string jsonExtension = ".json";
 
-			return $"{fileName}_{timestamp}{jsonExtension}";
+			string fileName = $"{timestamp}{jsonExtension}";
 
+			return fileName;
 		}
 
 		public string GeneratedMovedCsvReadFile(string currentFileName)

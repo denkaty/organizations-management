@@ -25,11 +25,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Organizations.Data.Models",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataImportingLibrary", "DataImportingLibrary", "{371281CA-FC8A-4A00-B3BE-81FF595E3798}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataImporting", "src\DataImportingLibrary\DataImporting\DataImporting.csproj", "{F41E4ED4-842F-4D5B-B38A-504BF2E5ED27}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataImporting", "src\DataImportingLibrary\DataImporting\DataImporting.csproj", "{F41E4ED4-842F-4D5B-B38A-504BF2E5ED27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataImporting.Abstraction", "src\DataImportingLibrary\DataImporting.Abstraction\DataImporting.Abstraction.csproj", "{EA64E0B9-455F-4EE7-9013-FE257B6551E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataImporting.Abstraction", "src\DataImportingLibrary\DataImporting.Abstraction\DataImporting.Abstraction.csproj", "{EA64E0B9-455F-4EE7-9013-FE257B6551E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataImporting.Models", "src\DataImportingLibrary\DataImporting.Models\DataImporting.Models.csproj", "{D024F843-2E57-41BB-B555-67CBAFEB67E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataImporting.Models", "src\DataImportingLibrary\DataImporting.Models\DataImporting.Models.csproj", "{D024F843-2E57-41BB-B555-67CBAFEB67E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

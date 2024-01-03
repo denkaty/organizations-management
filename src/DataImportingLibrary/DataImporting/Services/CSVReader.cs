@@ -28,9 +28,9 @@ namespace DataImporting.Services
 				using var streamReader = new StreamReader(csvFilePath);
 				using var csvReader = new CsvReader(streamReader, culture: CultureInfo.InvariantCulture);
 
-				IEnumerable<RawOrganization> rawOrganizations = csvReader.GetRecords<RawOrganization>();
+				IEnumerable<RawOrganization> rawOrganizations = csvReader.GetRecords<RawOrganization>().ToList();
 
-				IEnumerable<NormalizedOrganization> normalizedOrganizations = _organizationDataNormalizer.NormalizeOrganizationData(rawOrganizations);
+				IEnumerable<NormalizedOrganization> normalizedOrganizations = _organizationDataNormalizer.NormalizeOrganizationData(rawOrganizations).ToList();
 
 				json = JsonConvert.SerializeObject(normalizedOrganizations);
 			}

@@ -34,7 +34,6 @@ namespace DataImporting.Services
 				string jsonFilePath = Path.Combine(jsonOutputFolderPath, _fileNameGenerator.GenerateJsonDataFile());
 
 				File.WriteAllText(jsonFilePath, jsonData);
-				Console.WriteLine($"JSON file created at: {jsonFilePath}");
 			}
 			catch (Exception ex)
 			{
