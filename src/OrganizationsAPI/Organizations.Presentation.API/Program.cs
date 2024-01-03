@@ -29,6 +29,8 @@ builder.Services.Configure<DataOptions>(dataOptions);
 builder.Services.Configure<HostsOptions>(allowedHostsOptions);
 
 builder.Services.AddAutoMapper(typeof(OrganizationsProfile));
+builder.Services.AddTransient<IOrganizationsDatabaseExistenceChecker, OrganizationsDatabaseExistenceChecker>();
+builder.Services.AddTransient<IOrganizationsDatabaseInitializer, OrganizationsDatabaseInitializer>();
 builder.Services.AddTransient<IOrganizationsDatabaseConnectionValidator, OrganizationsDatabaseConnectionValidator>();
 builder.Services.AddTransient<IOrganizationsDatabaseTableExistenceChecker, OrganizationsDatabaseTableExistenceChecker>();
 builder.Services.AddTransient<IOrganizationsDatabaseTableInitializer, OrganizationsDatabaseTableInitializer>();

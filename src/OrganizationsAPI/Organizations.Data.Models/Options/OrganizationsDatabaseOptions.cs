@@ -8,6 +8,8 @@ namespace Organizations.Data.Models.Options
 {
 	public class OrganizationsDatabaseOptions
 	{
+		public string MasterConnectionString { get; set; }
+		public string DatabaseName { get; set; }
 		public string ConnectionString { get; set; }
 		public string[] Tables { get; set; }
 

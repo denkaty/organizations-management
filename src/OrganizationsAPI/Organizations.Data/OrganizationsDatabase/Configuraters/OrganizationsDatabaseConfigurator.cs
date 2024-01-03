@@ -9,15 +9,21 @@ namespace Organizations.Data.OrganizationsDatabase.Configuraters
 {
     public class OrganizationsDatabaseConfigurator : IOrganizationsDatabaseConfigurator
     {
-        private readonly IOrganizationsDatabaseConnectionValidator _connectiongValidator;
+        private readonly IOrganizationsDatabaseExistenceChecker _databaseExistenceChecker;
+        private readonly IOrganizationsDatabaseInitializer _databaseInitializer;
+        private readonly IOrganizationsDatabaseConnectionValidator _connectionValidator;
         private readonly IOrganizationsDatabaseTableExistenceChecker _tableExistenceChecker;
         private readonly IOrganizationsDatabaseTableInitializer _tableInitializer;
 
-        public OrganizationsDatabaseConfigurator(IOrganizationsDatabaseConnectionValidator connectiongValidator,
-                                                IOrganizationsDatabaseTableExistenceChecker tableExistenceChecker,
-                                                IOrganizationsDatabaseTableInitializer tableInitializer)
+        public OrganizationsDatabaseConfigurator(IOrganizationsDatabaseExistenceChecker databaseExistenceChecker,
+												 IOrganizationsDatabaseInitializer databaseInitializer,
+												 IOrganizationsDatabaseConnectionValidator connectionValidator,
+                                                 IOrganizationsDatabaseTableExistenceChecker tableExistenceChecker,
+                                                 IOrganizationsDatabaseTableInitializer tableInitializer)
         {
-            _connectiongValidator = connectiongValidator;
+            _databaseExistenceChecker = databaseExistenceChecker;
+            _databaseInitializer = databaseInitializer;
+			_connectionValidator = connectionValidator;
             _tableExistenceChecker = tableExistenceChecker;
             _tableInitializer = tableInitializer;
         }
@@ -25,24 +31,27 @@ namespace Organizations.Data.OrganizationsDatabase.Configuraters
         {
             try
             {
-                bool isConnectionValid = _connectiongValidator.IsConnectionValid();
+                bool isDatabaseExisting = _databaseExistenceChecker.IsDatabaseExisting();
+                if (!isDatabaseExisting) 
+                {
+					_databaseInitializer.Initialize();
+				}
 
+                bool isConnectionValid = _connectionValidator.IsConnectionValid();
                 if (isConnectionValid)
                 {
-                    var tableNames = _tableExistenceChecker.TableNames;
-                    foreach (var table in tableNames)
-                    {
-                        bool isTableExisting = _tableExistenceChecker.IsTableExisting(table);
-                        if (!isTableExisting)
-                        {
-                            _tableInitializer.CreateTable(table);
-                        }
+					var tableNames = _tableExistenceChecker.TableNames;
+					foreach (var table in tableNames)
+					{
+						bool isTableExisting = _tableExistenceChecker.IsTableExisting(table);
+						if (!isTableExisting)
+						{
+							_tableInitializer.CreateTable(table);
+						}
+					}
+				}
 
-                    }
-
-                }
-
-            }
+			}
             catch (Exception)
             {
                 throw;

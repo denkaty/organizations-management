@@ -31,7 +31,7 @@ namespace Organizations.Data.OrganizationsDatabase.Configuraters
                 {
                     connection.Open();
 
-                    using (SqlCommand command = new SqlCommand(SchemaQueries.IsTableExisting, connection))
+                    using (SqlCommand command = new SqlCommand(ExistenceQueries.IsTableExisting, connection))
                     {
                         command.Parameters.AddWithValue("@TableName", tableName);
 
