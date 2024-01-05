@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using DataImporting.Models;
+using Organizations.Business.Models.DTOs.Account;
 using Organizations.Business.Models.DTOs.Country;
 using Organizations.Business.Models.DTOs.Industry;
 using Organizations.Business.Models.DTOs.Organization;
 using Organizations.Business.Models.DTOs.Statistic;
+using Organizations.Business.Models.DTOs.User;
 using Organizations.Data.Models.Entities;
 using System;
 using System.Collections.Generic;
@@ -53,6 +55,8 @@ namespace Organizations.Business.AutoMapper
 			CreateMap<StatisticEmployeesCountByIndustry, StatisticEmployeesCountByIndustryDTO>();
 
 			CreateMap<StatisticEmployeesCountByCountryAndIndustry, StatisticEmployeesCountByCountryAndIndustryDTO>();
+
+			CreateMap<RegisterAccountDTO, User>().ReverseMap();
 
 
 		}
