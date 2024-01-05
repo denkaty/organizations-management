@@ -19,10 +19,10 @@ namespace Organizations.Presentation.API.Controllers
 		}
 
 		[HttpPost]
-		[Route("SignUp")]
-		public IActionResult SignUp(RegisterAccountDTO request)
+		[Route("Register")]
+		public IActionResult Register(RegisterAccountDTO request)
 		{
-			var response = _accountService.SignUp(request);
+			var response = _accountService.Register(request);
 
 			return this.HandleResponse(response);
 		}

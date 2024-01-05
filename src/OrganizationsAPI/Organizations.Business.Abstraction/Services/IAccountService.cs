@@ -11,7 +11,7 @@ namespace Organizations.Business.Abstraction.Services
 {
 	public interface IAccountService
 	{
-		IAPIResult<ResultAccountDTO> SignUp(RegisterAccountDTO registerAccountDTO);
+		IAPIResult<ResultAccountDTO> Register(RegisterAccountDTO registerAccountDTO);
 		IAPIResult<LoginResultAccountDTO> Login(LoginAccountDTO loginAccountDTO);
 	}
 }

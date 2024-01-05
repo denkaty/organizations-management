@@ -35,7 +35,7 @@ namespace Organizations.Business.Services
 			_tokenManager = tokenManager;
 		}
 
-		public IAPIResult<ResultAccountDTO> SignUp(RegisterAccountDTO registerAccountDTO)
+		public IAPIResult<ResultAccountDTO> Register(RegisterAccountDTO registerAccountDTO)
 		{
 			User? existingUsername = _organizationsContext.Users.GetByUsername(registerAccountDTO.Username);
 			if (existingUsername != null)
