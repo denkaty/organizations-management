@@ -14,6 +14,7 @@ namespace Organizations.Data.Abstraction.DatabaseContexts
 		IOrganizationsDatabaseOrganizationRepository Organizations { get; }
 		IOrganizationsDatabaseOrganizationIndustryRepository OrganizationsIndustries { get; }
 		IOrganizationsDatabaseStatisticRepository Statistics { get; }
+		IOrganizationsDatabaseUserRepository Users { get; }
 
 	}
 }

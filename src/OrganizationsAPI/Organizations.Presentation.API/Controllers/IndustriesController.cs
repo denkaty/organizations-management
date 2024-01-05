@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Organizations.Business.Abstraction.Services;
 using Organizations.Business.Models.DTOs.Country;
 using Organizations.Business.Models.DTOs.Industry;
 using Organizations.Business.Services;
 using Organizations.Presentation.API.Extensions;
+using Organizations.Presentation.API.Identity;
 
 namespace Organizations.Presentation.API.Controllers
 {
@@ -18,6 +20,7 @@ namespace Organizations.Presentation.API.Controllers
 			_industryService = industryService;
 		}
 
+		[Authorize]
 		[HttpPost]
 		[Route("CreateIndustry")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
@@ -62,6 +65,7 @@ namespace Organizations.Presentation.API.Controllers
 
 		}
 
+		[Authorize]
 		[HttpPut]
 		[Route("UpdateIndustryById/{id}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -74,6 +78,7 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
+		[Authorize(Policy = IdentityData.AdminUserPolicyName)]
 		[HttpDelete]
 		[Route("SoftDeleteIndustryById/{id}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -86,6 +91,7 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
+		[Authorize(Policy = IdentityData.AdminUserPolicyName)]
 		[HttpPut]
 		[Route("RestoreCountryById/{id}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]

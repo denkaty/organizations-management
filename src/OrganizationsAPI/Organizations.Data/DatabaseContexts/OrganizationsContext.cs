@@ -15,13 +15,15 @@ namespace Organizations.Data.DatabaseContexts
 									IOrganizationsDatabaseIndustryRepository industries,
 									IOrganizationsDatabaseOrganizationRepository organizations,
 									IOrganizationsDatabaseOrganizationIndustryRepository organizationsIndustries,
-									IOrganizationsDatabaseStatisticRepository statistics)
+									IOrganizationsDatabaseStatisticRepository statistics,
+									IOrganizationsDatabaseUserRepository users)
 		{
 			Countries = countries;
 			Industries = industries;
 			Organizations = organizations;
 			OrganizationsIndustries = organizationsIndustries;
 			Statistics = statistics;
+			Users = users;
 		}
 
 		public IOrganizationsDatabaseCountryRepository Countries { get; }
@@ -33,5 +35,6 @@ namespace Organizations.Data.DatabaseContexts
 		public IOrganizationsDatabaseOrganizationIndustryRepository OrganizationsIndustries { get; }
 
 		public IOrganizationsDatabaseStatisticRepository Statistics { get; }
+		public IOrganizationsDatabaseUserRepository Users { get; }
 	}
 }

@@ -14,20 +14,23 @@ namespace Organizations.Data.OrganizationsDatabase.Configuraters
         private readonly IOrganizationsDatabaseConnectionValidator _connectionValidator;
         private readonly IOrganizationsDatabaseTableExistenceChecker _tableExistenceChecker;
         private readonly IOrganizationsDatabaseTableInitializer _tableInitializer;
+        private readonly IOrganizationsDatabaseSeeder _seeder;
 
-        public OrganizationsDatabaseConfigurator(IOrganizationsDatabaseExistenceChecker databaseExistenceChecker,
+		public OrganizationsDatabaseConfigurator(IOrganizationsDatabaseExistenceChecker databaseExistenceChecker,
 												 IOrganizationsDatabaseInitializer databaseInitializer,
 												 IOrganizationsDatabaseConnectionValidator connectionValidator,
-                                                 IOrganizationsDatabaseTableExistenceChecker tableExistenceChecker,
-                                                 IOrganizationsDatabaseTableInitializer tableInitializer)
-        {
-            _databaseExistenceChecker = databaseExistenceChecker;
-            _databaseInitializer = databaseInitializer;
+												 IOrganizationsDatabaseTableExistenceChecker tableExistenceChecker,
+												 IOrganizationsDatabaseTableInitializer tableInitializer,
+												 IOrganizationsDatabaseSeeder seeder)
+		{
+			_databaseExistenceChecker = databaseExistenceChecker;
+			_databaseInitializer = databaseInitializer;
 			_connectionValidator = connectionValidator;
-            _tableExistenceChecker = tableExistenceChecker;
-            _tableInitializer = tableInitializer;
-        }
-        public void ConfigureDatabase()
+			_tableExistenceChecker = tableExistenceChecker;
+			_tableInitializer = tableInitializer;
+			_seeder = seeder;
+		}
+		public void ConfigureDatabase()
         {
             try
             {
@@ -49,6 +52,11 @@ namespace Organizations.Data.OrganizationsDatabase.Configuraters
 							_tableInitializer.CreateTable(table);
 						}
 					}
+
+                    if (!isDatabaseExisting)
+                    {
+                        _seeder.Seed();
+                    }
 				}
 
 			}

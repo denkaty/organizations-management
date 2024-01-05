@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Organizations.Business.Abstraction.Services;
 using Organizations.Presentation.API.Extensions;
 

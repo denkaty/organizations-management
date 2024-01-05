@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Organizations.Business.Abstraction.Services;
 using Organizations.Business.Models.DTOs.Organization;
@@ -6,6 +7,7 @@ using Organizations.Business.Models.Results.Base;
 using Organizations.Business.Services;
 using Organizations.Data.Abstraction.DatabaseContexts;
 using Organizations.Presentation.API.Extensions;
+using Organizations.Presentation.API.Identity;
 
 namespace Organizations.Presentation.API.Controllers
 {
@@ -20,6 +22,7 @@ namespace Organizations.Presentation.API.Controllers
 			_organizationsService = organizationsService;
 		}
 
+		[Authorize]
 		[HttpPost]
 		[Route("CreateOrganization")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
@@ -76,6 +79,7 @@ namespace Organizations.Presentation.API.Controllers
 
 		}
 
+		[Authorize]
 		[HttpPut]
 		[Route("UpdateOrganizationById/{id}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -88,6 +92,7 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
+		[Authorize]
 		[HttpPatch]
 		[Route("UpdateOrganizationCountry/{id}")]
 		public IActionResult UpdateCountry([FromRoute] string id, PatchCountryDTO patchCountryDTO)
@@ -97,6 +102,7 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
+		[Authorize]
 		[HttpPost]
 		[Route("AddIndustryToOrganization/{id}")]
 		public IActionResult AddIndustry([FromRoute] string id, [FromBody] AddIndustryDTO addIndustryDTO)
@@ -106,6 +112,7 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
+		[Authorize(Policy = IdentityData.AdminUserPolicyName)]
 		[HttpDelete]
 		[Route("{id}/RemoveIndustryFromOrganization/{name}")]
 		public IActionResult AddIndustry([FromRoute] string id, [FromRoute] string name)
@@ -115,6 +122,7 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
+		[Authorize(Policy = IdentityData.AdminUserPolicyName)]
 		[HttpDelete]
 		[Route("SoftDeleteOrganizationById/{id}")]
 		public IActionResult SoftDeleteById([FromRoute] string id)
@@ -124,6 +132,7 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
+		[Authorize(Policy = IdentityData.AdminUserPolicyName)]
 		[HttpPut]
 		[Route("RestoreOrganizationById/{id}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]

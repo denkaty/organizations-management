@@ -22,6 +22,9 @@ namespace Organizations.Business.Models.Results.Base
 		public const string ResourceIdSameAsBefore = "Invalid request - The provided {0} id '{1}' matches its current id.";
 		public const string JunctionResourceExists = "Invalid request - {0} primary key '{1}' and '{2}' already exists.";
 		public const string JunctionResourceDoesNotExists = "Invalid request - {0} primary key '{1}' and '{2}' does not exist.";
+		public const string UsernameAlreadyExists = "Invalid request - The username '{0}' is already in use.";
+		public const string AccountEmailAlreadyExists = "Invalid request - The email '{0}' is already in use.";
+		public const string AccountInvalidLogin = "Email or password is invalid";
 
 	}
 }

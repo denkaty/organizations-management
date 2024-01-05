@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Organizations.Business.Abstraction.Services;
 using Organizations.Business.Models.DTOs.Country;
-using Organizations.Business.Models.DTOs.Organization;
 using Organizations.Presentation.API.Extensions;
+using Organizations.Presentation.API.Identity;
 
 namespace Organizations.Presentation.API.Controllers
 {
-    [Route("api/[controller]")]
+	[Route("api/[controller]")]
 	[ApiController]
 	public class CountriesController : ControllerBase
 	{
@@ -16,6 +17,7 @@ namespace Organizations.Presentation.API.Controllers
 			_countryService = countryService;
 		}
 
+		[Authorize]
 		[HttpPost]
 		[Route("CreateCountry")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
@@ -60,6 +62,7 @@ namespace Organizations.Presentation.API.Controllers
 
 		}
 
+		[Authorize]
 		[HttpPut]
 		[Route("UpdateCountryById/{id}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -72,6 +75,7 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
+		[Authorize(Policy = IdentityData.AdminUserPolicyName)]
 		[HttpDelete]
 		[Route("SoftDeleteCountryById/{id}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -84,6 +88,7 @@ namespace Organizations.Presentation.API.Controllers
 			return this.HandleResponse(apiResult);
 		}
 
+		[Authorize(Policy = IdentityData.AdminUserPolicyName)]
 		[HttpPut]
 		[Route("RestoreCountryById/{id}")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]

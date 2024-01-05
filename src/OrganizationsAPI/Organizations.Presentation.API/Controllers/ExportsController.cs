@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Organizations.Business.Abstraction.Services;
 using Organizations.Business.Models.Results.Base;
@@ -17,6 +18,7 @@ namespace Organizations.Presentation.API.Controllers
 			_exportService = exportService;
 		}
 
+		[Authorize]
 		[HttpGet]
 		[Route("Organizations/GeneratePDF/{id}")]
 		public IActionResult GenerateOrganizationPDF([FromRoute]string id)
