@@ -66,6 +66,7 @@ builder.Services.AddTransient<ICSVReader, CSVReader>();
 builder.Services.AddTransient<IDataImporter, DataImporter>();
 builder.Services.AddTransient<IFileNameGenerator, FileNameGenerator>();
 builder.Services.AddTransient<IOrganizationsDataFileHandler, OrganizationsDataFileHandler>();
+builder.Services.AddTransient<IReadDataSummarizer, ReadDataSummarizer>();
 builder.Services.AddTransient<IDataImportingManager, DataImportingManager>();
 builder.Services.AddHostedService<RecurringDataImportingHostedService>();
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
