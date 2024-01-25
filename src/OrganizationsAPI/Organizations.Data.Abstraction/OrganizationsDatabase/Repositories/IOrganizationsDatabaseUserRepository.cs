@@ -15,6 +15,8 @@ namespace Organizations.Data.Abstraction.OrganizationsDatabase.Repositories
 		User? GetByUsername(string username);
 		User? GetByEmail(string email);
 		User? GetByUsernameOrEmail(string identifier);
+		bool IsUsernameExisting(string username);
+		bool IsEmailExisting(string email);
 		ICollection<User> GetAll();
 		IEnumerable<User> GetAll(Func<User, bool> predicate);
 		//void UpdateByUsername(string username, User entity);

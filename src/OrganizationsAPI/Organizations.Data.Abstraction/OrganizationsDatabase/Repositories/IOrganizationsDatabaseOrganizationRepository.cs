@@ -11,6 +11,7 @@ namespace Organizations.Data.Abstraction.OrganizationsDatabase.Repositories
 	public interface IOrganizationsDatabaseOrganizationRepository : IEntityRepository<Organization>
 	{
 		Organization? GetByName(string name);
+		public IEnumerable<string> GetAllIds();
 		void UpdateCountryToNull(string organizationId);
 		void UpdateCountry(string organizationId, string countryName);
 	}
