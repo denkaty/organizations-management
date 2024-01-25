@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace DataImporting.Abstraction.Services
 {
-	public interface IOrganizationDataNormalizer
+	public interface IDataBulkingManager
 	{
-		ICollection<NormalizedOrganization> NormalizeOrganizationData(ICollection<RawOrganization> rawOrganizations);
+		BulkedDataWrapper BulkData(ICollection<NormalizedOrganization> organizations);
 	}
 }

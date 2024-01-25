@@ -9,6 +9,6 @@ namespace DataImporting.Abstraction.Services
 {
 	public interface IDataImporter
 	{
-		void ImportData(ICollection<NormalizedOrganization> organizations);
+		void ImportData(BulkedDataWrapper bulkedDataWrapper);
 	}
 }
