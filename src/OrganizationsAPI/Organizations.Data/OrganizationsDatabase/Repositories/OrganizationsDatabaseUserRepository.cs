@@ -49,7 +49,14 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 
 			return user;
 		}
-
+		public bool IsUsernameExisting(string username)
+		{
+			return IsUsernameAlreadyExisting(username);
+		}
+		public bool IsEmailExisting(string email)
+		{
+			return IsEmailAlreadyExisting(email);
+		}
 		public ICollection<User> GetAll()
 		{
 			ICollection<User> users = GetAllUsers();
@@ -257,6 +264,51 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			return user;
 		}
 
+		private bool IsUsernameAlreadyExisting(string username)
+		{
+			bool isExisting = false;
+			using (SqlConnection connection = new SqlConnection(_connectionString))
+			{
+				using (SqlCommand command = connection.CreateCommand())
+				{
+					command.CommandText = UserTableQueries.CheckUsername;
+					connection.Open();
+					using (SqlDataReader dataReader = command.ExecuteReader())
+					{
+						while (dataReader.Read())
+						{
+							isExisting = Convert.ToInt32(dataReader["username_exists"]) == 1;
+						}
+					}
+
+				}
+			}
+
+			return isExisting;
+		}
+		private bool IsEmailAlreadyExisting(string email)
+		{
+			bool isExisting = false;
+			using (SqlConnection connection = new SqlConnection(_connectionString))
+			{
+				using (SqlCommand command = connection.CreateCommand())
+				{
+					command.CommandText = UserTableQueries.CheckEmail;
+					connection.Open();
+					using (SqlDataReader dataReader = command.ExecuteReader())
+					{
+						while (dataReader.Read())
+						{
+							isExisting = Convert.ToInt32(dataReader["email_exists"]) == 1;
+						}
+					}
+
+				}
+			}
+
+			return isExisting;
+		}
+
 		private ICollection<User> GetAllUsers()
 		{
 			ICollection<User> users = null;
@@ -338,6 +390,6 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			}
 		}
 
-		
+
 	}
 }

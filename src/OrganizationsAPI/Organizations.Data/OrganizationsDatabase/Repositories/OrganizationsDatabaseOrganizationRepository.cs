@@ -45,6 +45,13 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 			return organizations;
 		}
 
+		public IEnumerable<string> GetAllIds()
+		{
+			ICollection<string> organizationsIds = FetchOrganizationsIds();
+
+			return organizationsIds;
+		}
+
 		public void UpdateById(string id, Organization entity)
 		{
 			UpdateOrganization(id, entity);
@@ -213,7 +220,29 @@ namespace Organizations.Data.OrganizationsDatabase.Repositories
 
 			return organizations;
 		}
+		private ICollection<string> FetchOrganizationsIds()
+		{
+			var organizationsIds = new List<string>();
+			using (SqlConnection connection = new SqlConnection(_connectionString))
+			{
+				using (SqlCommand command = connection.CreateCommand())
+				{
+					command.CommandText = OrganizationTableQueries.GetAll;
+					connection.Open();
+					using (SqlDataReader dataReader = command.ExecuteReader())
+					{
+						string organizationId = null;
+						while (dataReader.Read())
+						{
+							organizationId = Convert.ToString(dataReader["OrganizationId"]);
+							organizationsIds.Add(organizationId);
+						}
+					}
+				}
+			}
+			return organizationsIds;
 
+		}
 		private void UpdateOrganization(string id, Organization entity)
 		{
 			try
