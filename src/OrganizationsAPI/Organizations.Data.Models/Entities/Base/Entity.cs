@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Organizations.Data.Models.CustomAttributes;
 using Organizations.Data.Models.Entities.Base.Interfaces;
 
 namespace Organizations.Data.Models.Entities.Base
@@ -14,6 +15,7 @@ namespace Organizations.Data.Models.Entities.Base
 			Id = Guid.NewGuid().ToString();
 		}
 
+		[Order(1)]
 		public string Id { get; set; }
 	}
 }
