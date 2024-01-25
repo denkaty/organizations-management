@@ -1,5 +1,6 @@
 ﻿
 using Organizations.Business.Abstraction.Services;
+using System.Diagnostics;
 
 namespace Organizations.Presentation.API.BackgroundServices
 {
@@ -20,8 +21,12 @@ namespace Organizations.Presentation.API.BackgroundServices
 		}
 		private void DoWork(object state)
 		{
+			Stopwatch stopwatch = new Stopwatch();
+			stopwatch.Start();
 			_dataImportingManager.ProcessImporting();
-		}
+			stopwatch.Stop();
+            Console.WriteLine($"Total time with normalizing and importing: {stopwatch.ElapsedMilliseconds}");
+        }
 
 		public Task StopAsync(CancellationToken cancellationToken)
 		{
