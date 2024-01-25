@@ -24,7 +24,7 @@ namespace DataImporting.Services
 		}
 		public string[] GetCSVFiles(string folderPath)
 		{
-			return Directory.GetFiles(folderPath, "*.txt");
+			return Directory.GetFiles(folderPath, "*.csv");
 		}
 
 		public void CreateJsonFile(string jsonOutputFolderPath, string jsonData)

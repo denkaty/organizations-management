@@ -17,7 +17,7 @@ namespace DataImporting.Services
 			_industriesNormalizer = industriesNormalizer;
 		}
 
-		public IEnumerable<NormalizedOrganization> NormalizeOrganizationData(IEnumerable<RawOrganization> rawOrganizations)
+		public ICollection<NormalizedOrganization> NormalizeOrganizationData(ICollection<RawOrganization> rawOrganizations)
 		{
 			var normalizedOrganizations = new List<NormalizedOrganization>();
 			foreach (var rawOrganization in rawOrganizations)
