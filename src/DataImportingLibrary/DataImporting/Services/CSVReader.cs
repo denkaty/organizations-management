@@ -30,9 +30,7 @@ namespace DataImporting.Services
 
 				IEnumerable<RawOrganization> rawOrganizations = csvReader.GetRecords<RawOrganization>().ToList();
 
-				IEnumerable<NormalizedOrganization> normalizedOrganizations = _organizationDataNormalizer.NormalizeOrganizationData(rawOrganizations).ToList();
-
-				json = JsonConvert.SerializeObject(normalizedOrganizations);
+				json = JsonConvert.SerializeObject(rawOrganizations);
 			}
 			catch (Exception)
 			{
