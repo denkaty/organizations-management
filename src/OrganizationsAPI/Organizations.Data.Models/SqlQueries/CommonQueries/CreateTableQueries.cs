@@ -39,8 +39,7 @@ namespace Organizations.Data.Models.SqlQueries.CommonQueries
             [IsDeleted] BIT NOT NULL DEFAULT 0,
             CONSTRAINT PK_Organization_Id PRIMARY KEY ([Id]),
             CONSTRAINT FK_Organization_Country_Id_Country_Id FOREIGN KEY ([Country_Id]) REFERENCES Country([Id]),
-            CONSTRAINT UQ_Organization_OrganizationId UNIQUE ([OrganizationId]),
-            CONSTRAINT UQ_Organization_Name UNIQUE ([Name])
+            CONSTRAINT UQ_Organization_OrganizationId UNIQUE ([OrganizationId])
             );";
 
         public const string OrganizationIndustry =
