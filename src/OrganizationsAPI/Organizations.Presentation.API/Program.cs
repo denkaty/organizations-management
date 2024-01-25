@@ -25,6 +25,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Cryptography;
 using Organizations.Presentation.API.Identity;
+using Organizations.Data.Abstraction.Factories;
+using Organizations.Data.Factories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +58,15 @@ builder.Services.AddTransient<IOrganizationsDatabaseStatisticRepository, Organiz
 builder.Services.AddTransient<IOrganizationsDatabaseUserRepository, OrganizationsDatabaseUserRepository>();
 builder.Services.AddTransient<IAPIResultFactory, APIResultFactory>();
 builder.Services.AddTransient<IOrganizationsContext, OrganizationsContext>();
+
+builder.Services.AddTransient<IEntityFactory, EntityFactory>();
+
+builder.Services.AddSingleton<ICachedOrganizationsIdsHelper, CachedOrganizationsIdsHelper>();
+builder.Services.AddHostedService<DataLoadBackgroundService>();
+
+builder.Services.AddTransient<IDataBulkingManager, DataBulkingManager>();
+
+
 builder.Services.AddScoped<ICountryService, CountryService>();
 builder.Services.AddScoped<IOrganizationService, OrganizationService>();
 builder.Services.AddScoped<IIndustryService, IndustryService>();
