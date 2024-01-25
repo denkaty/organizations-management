@@ -83,7 +83,7 @@ namespace Organizations.Business.Services
 				return _apiResultFactory.GetNotFoundResult<ResultCountryDTO>(string.Format(Messages.ResourceNotFound, "Country", id));
 			}
 
-			if (existingCountry.Name == existingCountry.Name)
+			if (existingCountry.Name == updateCountryDTO.Name)
 			{
 				return _apiResultFactory.GetBadRequestResult<ResultCountryDTO>(string.Format(Messages.ResourceNameSameAsBefore, "Country", existingCountry.Name));
 			}

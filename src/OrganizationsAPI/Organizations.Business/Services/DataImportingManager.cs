@@ -18,12 +18,16 @@ namespace Organizations.Business.Services
 		private readonly IMapper _mapper;
 		private readonly IOrganizationsDataFileHandler _dataFileHandler;
 		private readonly IReadDataSummarizer _readDataSummarizer;
+		private readonly IDataBulkingManager _dataBulkingManager;
+		private readonly IOrganizationDataNormalizer _organizationDataNormalizer;
 		public DataImportingManager(IOptions<DataOptions> dataOptions,
 									ICSVReader csvReader,
 									IDataImporter dataImporter,
 									IMapper mapper,
 									IOrganizationsDataFileHandler dataFileHandler,
-									IReadDataSummarizer readDataSummarizer)
+									IReadDataSummarizer readDataSummarizer,
+									IDataBulkingManager dataBulkingManager,
+									IOrganizationDataNormalizer organizationDataNormalizer)
 		{
 			_dataOptions = dataOptions.Value;
 			_csvReader = csvReader;
@@ -31,6 +35,8 @@ namespace Organizations.Business.Services
 			_mapper = mapper;
 			_dataFileHandler = dataFileHandler;
 			_readDataSummarizer = readDataSummarizer;
+			_dataBulkingManager = dataBulkingManager;
+			_organizationDataNormalizer = organizationDataNormalizer;
 		}
 		public void ProcessImporting()
 		{
@@ -45,11 +51,14 @@ namespace Organizations.Business.Services
 				var jsonData = _csvReader.ReadCSVData(csvFilePath);
 				if (jsonData != null)
 				{
-                    ICollection<NormalizedOrganization> normalizedOrganizations = JsonConvert.DeserializeObject<ICollection<NormalizedOrganization>>(jsonData);
+					var rawOrganizations = JsonConvert.DeserializeObject<ICollection<RawOrganization>>(jsonData);
+					var normalizedOrganizations = _organizationDataNormalizer.NormalizeOrganizationData(rawOrganizations);
+
+					var bulkedDataWrapper = _dataBulkingManager.BulkData(normalizedOrganizations);
 
 					Stopwatch stopwatch = new Stopwatch();
 					stopwatch.Start();
-					_dataImporter.ImportData(normalizedOrganizations);
+					_dataImporter.ImportData(bulkedDataWrapper);
 					stopwatch.Stop();
 					long elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
 					Console.WriteLine($"Time taken to import data: {elapsedMilliseconds}ms");

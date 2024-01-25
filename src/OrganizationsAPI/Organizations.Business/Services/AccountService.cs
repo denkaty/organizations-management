@@ -37,14 +37,14 @@ namespace Organizations.Business.Services
 
 		public IAPIResult<ResultAccountDTO> Register(RegisterAccountDTO registerAccountDTO)
 		{
-			User? existingUsername = _organizationsContext.Users.GetByUsername(registerAccountDTO.Username);
-			if (existingUsername != null)
+			bool isUsernameExisting = _organizationsContext.Users.IsUsernameExisting(registerAccountDTO.Username);
+			if (!isUsernameExisting)
 			{
 				return _apiResultFactory.GetBadRequestResult<ResultAccountDTO>(string.Format(Messages.UsernameAlreadyExists, registerAccountDTO.Username));
 			}
 
-			User? existingEmail = _organizationsContext.Users.GetByEmail(registerAccountDTO.Email);
-			if (existingEmail != null)
+			bool isEmailExisting = _organizationsContext.Users.IsEmailExisting(registerAccountDTO.Email);
+			if (!isEmailExisting)
 			{
 				return _apiResultFactory.GetBadRequestResult<ResultAccountDTO>(string.Format(Messages.AccountEmailAlreadyExists, registerAccountDTO.Email));
 			}
