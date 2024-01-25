@@ -20,6 +20,9 @@ namespace Organizations.Data.Models.SqlQueries
 
 		public const string GetByUsernameOrEmail = "SELECT * FROM [User] WHERE Username = @Identifier or Email = @Identifier";
 
+		public const string CheckUsername = @"SELECT EXISTS (SELECT 1 FROM [User] WHERE Username = @Username) AS username_exists";
+		public const string CheckEmail = @"SELECT EXISTS (SELECT 1 FROM [User] WHERE Email = @Email) AS email_exists";
+
 		public const string GetAll = "SELECT * FROM [User]";
 
 		public const string Update = @"UPDATE [User] SET Username = @Username,

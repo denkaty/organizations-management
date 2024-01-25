@@ -17,6 +17,7 @@ namespace Organizations.Data.Models.SqlQueries
 		public const string GetByName = "SELECT * FROM Organization where Name = @Name";
 
 		public const string GetAll = "SELECT * FROM Organization";
+		public const string GetAllIds = "SELECT (OrganizationId) FROM Organization";
 
 		public const string Update = @"UPDATE Organization SET Name = @Name, 
 															   Website = @Website,
