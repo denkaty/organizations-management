@@ -1,5 +1,6 @@
 ﻿using DataImporting.Abstraction.Services;
 using DataImporting.Models;
+using DataImporting.Models.Constants;
 using Organizations.Business.Models.Options;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace DataImporting.Services
 		}
 		public string[] GetCSVFiles(string folderPath)
 		{
-			return Directory.GetFiles(folderPath, "*.csv");
+			return Directory.GetFiles(folderPath, FileConstants.CsvSearchPattern);
 		}
 
 		public void CreateJsonFile(string jsonOutputFolderPath, string jsonData)
@@ -51,7 +52,6 @@ namespace DataImporting.Services
 			}
 			catch (Exception)
 			{
-
 				throw;
 			}
 		}

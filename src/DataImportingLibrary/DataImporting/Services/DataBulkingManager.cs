@@ -45,6 +45,7 @@ namespace DataImporting.Services
 
 			return bulkCollection;
 		}
+
 		private void ProcessOrganizationBulking(NormalizedOrganization organizationData, BulkedDataWrapper bulkedDataWrapper)
 		{
 			if (_cachedOrganizationsIdsHelper.ContainsId(organizationData.OrganizationId))
@@ -60,14 +61,11 @@ namespace DataImporting.Services
 
 			var industryIds = ProcessIndustriesBulking(organizationData.Industries, bulkedDataWrapper.BulkedIndustries);
 
-			foreach (var industryId in industryIds)
-			{
-				var organizationIndustry = _entityFactory.CreateOrganizationIndustry(organizationData.OrganizationId, industryId);
-				bulkedDataWrapper.BulkedOrganizationsIndustries.Add(organizationIndustry);
-			}
+			ProcessOrganizationsIndustriesBulking(organizationData.OrganizationId, bulkedDataWrapper, industryIds);
 
 			bulkedDataWrapper.BulkedOrganizations.Add(organizationBulk);
 		}
+
 		private string ProcessCountryBulking(string countryName, ICollection<Country> bulkedCountries)
 		{
 			if (!_availableCountries.TryGetValue(countryName, out var countryId))
@@ -80,6 +78,7 @@ namespace DataImporting.Services
 
 			return countryId;
 		}
+
 		private ICollection<string> ProcessIndustriesBulking(IEnumerable<string> industryNames, ICollection<Industry> bulkedIndustries)
 		{
 			var industryIds = new List<string>();
@@ -99,6 +98,14 @@ namespace DataImporting.Services
 
 			return industryIds;
 		}
+		private void ProcessOrganizationsIndustriesBulking(string organizationId, BulkedDataWrapper bulkedDataWrapper, ICollection<string> industryIds)
+		{
+			foreach (var industryId in industryIds)
+			{
+				var organizationIndustry = _entityFactory.CreateOrganizationIndustry(organizationId, industryId);
+				bulkedDataWrapper.BulkedOrganizationsIndustries.Add(organizationIndustry);
+			}
+		}
 
 		private void LoadCurrentData()
 		{
@@ -110,6 +117,7 @@ namespace DataImporting.Services
 				.GetAll()
 				.ToDictionary(c => c.Name, c => c.Id);
 		}
+
 		private void ClearData()
 		{
 			_availableCountries.Clear();

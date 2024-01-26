@@ -19,26 +19,24 @@ namespace DataImporting.Services
 
 		public ICollection<NormalizedOrganization> NormalizeOrganizationData(ICollection<RawOrganization> rawOrganizations)
 		{
-			var normalizedOrganizations = new List<NormalizedOrganization>();
-			foreach (var rawOrganization in rawOrganizations)
-			{
-				var normalizedOrganization = new NormalizedOrganization
-				{
-					OrganizationId = rawOrganization.OrganizationId,
-					Index = rawOrganization.Index,
-					Name = rawOrganization.Name,
-					Website = rawOrganization.Website,
-					Country = rawOrganization.Country,
-					Description = rawOrganization.Description,
-					Founded = rawOrganization.Founded,
-					Industries = _industriesNormalizer.NormalizeIndustries(rawOrganization.Industries),
-					Employees = rawOrganization.Employees
-				};
-
-				normalizedOrganizations.Add(normalizedOrganization);
-			}
-
-			return normalizedOrganizations;
+			return rawOrganizations.Select(NormalizeOrganization).ToList();
 		}
+
+		private NormalizedOrganization NormalizeOrganization(RawOrganization rawOrganization)
+		{
+			return new NormalizedOrganization
+			{
+				OrganizationId = rawOrganization.OrganizationId,
+				Index = rawOrganization.Index,
+				Name = rawOrganization.Name,
+				Website = rawOrganization.Website,
+				Country = rawOrganization.Country,
+				Description = rawOrganization.Description,
+				Founded = rawOrganization.Founded,
+				Industries = _industriesNormalizer.NormalizeIndustries(rawOrganization.Industries),
+				Employees = rawOrganization.Employees
+			};
+		}
+
 	}
 }

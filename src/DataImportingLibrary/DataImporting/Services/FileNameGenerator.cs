@@ -1,25 +1,19 @@
 ﻿using DataImporting.Abstraction.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DataImporting.Models.Constants;
 
 namespace DataImporting.Services
 {
 	public class FileNameGenerator : IFileNameGenerator
 	{
-
 		public string GenerateTimestamp()
 		{
-			return DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+			return DateTime.UtcNow.ToString(FileConstants.TimestampFormat);
 		}
 		public string GenerateJsonDataFile()
 		{
 			string timestamp = GenerateTimestamp();
-			string jsonExtension = ".json";
 
-			string fileName = $"{timestamp}{jsonExtension}";
+			string fileName = $"{timestamp}{FileConstants.JsonExtension}";
 
 			return fileName;
 		}

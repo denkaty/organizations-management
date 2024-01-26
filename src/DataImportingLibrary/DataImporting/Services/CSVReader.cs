@@ -13,31 +13,25 @@ namespace DataImporting.Services
 {
 	public class CSVReader : ICSVReader
 	{
-		private readonly IOrganizationDataNormalizer _organizationDataNormalizer;
-
-		public CSVReader(IOrganizationDataNormalizer organizationDataNormalizer)
-		{
-			_organizationDataNormalizer = organizationDataNormalizer;
-		}
-
 		public string? ReadCSVData(string csvFilePath)
 		{
-			string json = null;
+
 			try
 			{
-				using var streamReader = new StreamReader(csvFilePath);
-				using var csvReader = new CsvReader(streamReader, culture: CultureInfo.InvariantCulture);
+				using (var streamReader = new StreamReader(csvFilePath))
+				using (var csvReader = new CsvReader(streamReader, culture: CultureInfo.InvariantCulture))
+				{
+					IEnumerable<RawOrganization> rawOrganizations = csvReader.GetRecords<RawOrganization>();
 
-				IEnumerable<RawOrganization> rawOrganizations = csvReader.GetRecords<RawOrganization>().ToList();
-
-				json = JsonConvert.SerializeObject(rawOrganizations);
+					return JsonConvert.SerializeObject(rawOrganizations);
+				}
 			}
 			catch (Exception)
 			{
 				throw;
 			}
 
-			return json;
 		}
+
 	}
 }
