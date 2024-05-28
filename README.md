@@ -27,6 +27,13 @@
 
 4. Set up the MSSQL database and update the connection strings in the `appsettings.json` file.
 
+5. Running the API
+
+To run the API, use the following command:
+```bash
+dotnet run
+```
+
 ### Web API Structure
 
 - `Organizations.Business.Abstraction`: Contains the business logic interfaces and abstractions.
